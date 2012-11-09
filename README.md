@@ -32,11 +32,12 @@ And as usual, the script must be run as root, which is neccessary for
 any iptables-commands. Used system commands are:
 
 iptables-save -t filter -c
-iptables -A  (first inserting a lower rule into a higher position)
-iptables -D  (then deleting the lower rule, which is not used any longer)
-So the number of rules keeps constant.
 
-The python code automatically works on all chains within the filter-group.
+iptables -A  (first inserting a lower rule into a higher position)
+
+iptables -D  (then deleting the lower rule, which is not used any longer)
+
+So the number of rules keeps constant. The python code automatically works on all chains within the filter-group.
 
 For now, there are no doctests or unittests. If there is some time, they
 will come.
