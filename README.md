@@ -6,9 +6,14 @@ iptables-runtime-optimizer
 ==========================
 
 Author:     sl0.self@googlemail.com
+
 Date:       2012-11-09
+
 Version:    0.2
+
 License:    GNU General Public License version 3 or later
+
+
 
 This little python script is intended to run on a paketfilter-machine
 running on any actual linux distribution. As cpu-load increases due to 
