@@ -3,16 +3,17 @@
 # -*- coding: utf-8 -*-
 #
 """
-opti.py: optimize iptables commands in kernel
-        in relation to usage (paket counters)
+    iptables-optimizer.py:
+    optimize iptables commands in kernel
+    in relation to usage (paket counters)
 
 Author:     sl0.self@googlemail.com
-Date:       2012-11-09
-Version:    0.2
+Date:       2012-11-21
+Version:    0.3
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
-in iptables paketfilter chains, optimization target is troughput.
+in iptables paketfilter chains, optimization target is throughput.
 
 All chains are searched for consecutive ACCEPT-rules, these
 patitions in every chain are sorted on their paket-counter values.
@@ -20,12 +21,14 @@ Of course, if there are others, f.e. drop-rules or branches to
 userdefined chains, these are untouched for not destroying
 admistrators artwork.
 
+Still missing is some error-check at least on the iptables -A,
+only without an error there the iptables -D should be run.
+
 Comments, suggestions, improvements welcome!
 
 Have Fun!
 """
 
-from UserDict import UserDict
 import sys
 import os
 import subprocess
@@ -41,6 +44,22 @@ def get_cntrs():
     """get chain content through subproces"""
     return execute('/sbin/iptables-save -c -t filter')
 
+def reset_cntrs():
+    """reset all paket and byte counters through subproces to zero"""
+    return execute('/sbin/iptables -Z')
+
+def extern_sleep(duration=3):
+    """external visible process for long sleep periods"""
+    dura = int(duration)
+    cmd = "/bin/sleep %d" % (dura)
+    s = ""
+    e =""
+    try:
+        (s,e) = execute(cmd)
+    except ValueError, err:
+        print s, e, err
+    return (s,e)
+
 def extract_pkt_cntr(cntrs):
     """given is a string: '[pkt_cntr:byt_cntr]'
     we need pkt_cntr as return value for comparison"""
@@ -53,18 +72,16 @@ class Chain():
     """this is representation of one chain"""
 
     def __init__(self, name):
+        """create a chain just from it's name"""
         self.name = name
         self.liste = []
         self.cntrs = []
         self.bytes = []
         self.partitions = []
-        self.line_no = -1
-        #print "# Chain created: ", name
 
     def append(self,line_list):
         """first save full content """
         self.liste.append(line_list)
-        self.line_no += 1
         cntrs = line_list[0]
         (cnt, byt) = extract_pkt_cntr(cntrs)
         self.cntrs.append(cnt)
@@ -98,13 +115,6 @@ class Chain():
         retVal = len(self.partitions)
         return retVal
 
-    def print_partitions(self):
-        """show our partitions"""
-        print "# %-8s: partitions: %d" % (self.name, len(self.partitions)),
-        for part in self.partitions:
-            print part,
-        print
-
 
     def find_ins_point(self, act, part_start):
         """ find out, where to insert rule due to pkt-cntrs"""
@@ -135,10 +145,8 @@ class Chain():
         """optimze this chain due to paket counters"""
         ret_val = 0
         if len(self.liste) < 1:
-            print "# %-8s: %5d entries, nothing to do" % (self.name, len(self.liste))
             return ret_val
         self.make_partitions()
-        self.print_partitions()
         for part in self.partitions:
             start = part[0]
             last = part[1] + 1
@@ -148,8 +156,6 @@ class Chain():
                     self.mov_up(act, start)
                     par_val += 1
                     ret_val += 1
-            print "# %-8s: %5d entries, range: %5d - %-5d, mov_up: %5d" % \
-                       (self.name, len(self.liste), start, last - 1, par_val)
             ret_val += par_val
         return ret_val
 
@@ -161,7 +167,6 @@ class Filter():
         self.chains = {} # keep track of my chains
         self.name = name
         (o,e) = get_cntrs()   # read kernel through shell-cmd
-        line_no = -1 
         for line in o.split("\n"):
             if line.startswith(":"):    # first they are defined with policy and counters
                 (c_name, policy, rest) = line.replace(":", "").split(" ")
@@ -176,39 +181,44 @@ class Filter():
                         self.chains[c_name].append(items)
 
     def opti(self):
-        """ optimize all chains, one pass """
+        """optimize all chains, one pass"""
         ret_val = 0;
+        print "%-9s: %-15s %5s" % ("Chain", "Partitions", " Moved")
         for name in self.chains.keys():
-            ret_val += self.chains[name].opti()
+            moved = self.chains[name].opti()
+            ret_val += moved
+            parts = ""
+            for part in self.chains[name].partitions:
+                parts += str(part) 
+                print "%-9s: %-15s %-5d" % (name, str(part), moved)
         return ret_val
 
 
 if __name__ == "__main__":
     unbufd = os.fdopen(sys.stdout.fileno(), 'w', 0)
     sys.stdout = unbufd
-    k = 1
-    s = 300
-    t = 0
-    lc = 0
+    k = 1       # global loop counter
+    d = 300     # duration for long sleep periods
+    d = 3       # duration for long sleep periods
+    s = ""
+    e = ""
     try:
         while True:
             f = Filter("filter",k)
-            k = k + 1
             r = f.opti()
             if r > 0:
-		lc += 1
-                print "\rlooping", lc,
+                print "Round: ", k
                 time.sleep(2)
-                #print "\r       "
             else:
-                t = s
-                lc = 0
-                while t > 0:
-                    print "\r sleeping ", t, " ",
-                    time.sleep(1)
-                    t = t - 1
+                print "\r resetting counters"
+                reset_cntrs()
+                print "\r sleeping ", d, "seconds ...",
+                (s, e) = extern_sleep(d)
+                if len(e) > 0:
+                    print "stderr:", e
                 print
+            k = k + 1
     except KeyboardInterrupt, err:
-        print "\rUser stopped, excution terminated"
+        print "\rUser stopped, execution terminated"
 
 
