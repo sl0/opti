@@ -7,9 +7,9 @@ iptables-runtime-optimizer
 
 Author:     sl0.self@googlemail.com
 
-Date:       2012-11-21
+Date:       2012-11-23
 
-Version:    0.3
+Version:    0.4
 
 License:    GNU General Public License version 3 or later
 
@@ -46,6 +46,14 @@ to have an sorted ruleset of current traffic, not on todays traffic. The
 sleep command now is called externally although the internal command works 
 well, because it's useful to have an idea of internal state from the 
 outside.
+
+Version 0.4 relies on python 2.6 due to some crashes seen with 
+python 2.7.3rc2, which is delivered within Debian wheezy for now.
+Using version 2.6 the iptables-optimizer seems to run stable.
+Now some minimal errorchecking is done by evaluation of the iptables
+returncode, but still there is no logging to syslog or the like. 
+Of course, stdout might be redirected to some file for later revisions.
+Seeing the first non-zero returncode, the iptables-optimizer exits.
 
 The number of rules keeps constant. The python code automatically works 
 on all chains within the filter-group.

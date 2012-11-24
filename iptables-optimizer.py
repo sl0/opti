@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.6
 # -*- mode: python -*-
 # -*- coding: utf-8 -*-
 #
@@ -8,8 +8,8 @@
     in relation to usage (paket counters)
 
 Author:     sl0.self@googlemail.com
-Date:       2012-11-21
-Version:    0.3
+Date:       2012-11-23
+Version:    0.4
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
@@ -32,12 +32,18 @@ Have Fun!
 import sys
 import os
 import subprocess
-import time
 
 def execute(cmd):
     """execute cmd through subproces"""
+    #print "E:", cmd
     proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (stdout, stderr) = proc.communicate()
+    ret_val = proc.returncode
+    if len(stderr) > 0 or ret_val > 0:
+        print "got err:  ", stderr
+        print "returned: ", str(ret_val)
+        print "aborting"
+	sys.exit(1)
     return (stdout, stderr)
 
 def get_cntrs():
@@ -144,8 +150,9 @@ class Chain():
     def opti(self):
         """optimze this chain due to paket counters"""
         ret_val = 0
-        if len(self.liste) < 1:
-            return ret_val
+        len_val = len(self.liste)
+        if len_val < 1:
+            return (len_val, ret_val)
         self.make_partitions()
         for part in self.partitions:
             start = part[0]
@@ -157,7 +164,7 @@ class Chain():
                     par_val += 1
                     ret_val += 1
             ret_val += par_val
-        return ret_val
+        return (len_val, ret_val)
 
 class Filter():
     """this is a filter group, may be filter, mangle, nat, raw"""
@@ -183,14 +190,14 @@ class Filter():
     def opti(self):
         """optimize all chains, one pass"""
         ret_val = 0;
-        print "%-9s: %-15s %5s" % ("Chain", "Partitions", " Moved")
+        print "%-9s: %-15s %5s  %5s" % ("Chain", "Partitions", "Moved", "Total")
         for name in self.chains.keys():
-            moved = self.chains[name].opti()
+            (length, moved) = self.chains[name].opti()
             ret_val += moved
             parts = ""
             for part in self.chains[name].partitions:
                 parts += str(part) 
-                print "%-9s: %-15s %-5d" % (name, str(part), moved)
+                print "%-9s: %-15s %5d  %5d" % (name, str(part), moved, length)
         return ret_val
 
 
@@ -198,8 +205,8 @@ if __name__ == "__main__":
     unbufd = os.fdopen(sys.stdout.fileno(), 'w', 0)
     sys.stdout = unbufd
     k = 1       # global loop counter
-    d = 300     # duration for long sleep periods
-    d = 3       # duration for long sleep periods
+    d = 450     # duration for long sleep periods
+    #t = 1       # duration for short sleep periods
     s = ""
     e = ""
     try:
@@ -208,7 +215,10 @@ if __name__ == "__main__":
             r = f.opti()
             if r > 0:
                 print "Round: ", k
-                time.sleep(2)
+                #(s, e) = extern_sleep(t)
+                #if len(e) > 0:
+                #    print "stderr:", e
+                #print
             else:
                 print "\r resetting counters"
                 reset_cntrs()
