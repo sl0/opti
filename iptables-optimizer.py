@@ -242,7 +242,6 @@ if __name__ == "__main__":
     sys.stdout = unbufd
     k = 1       # global loop counter
     d = 450     # duration for long sleep periods
-    d = 4     # duration for long sleep periods
     t = .1       # duration for short sleep periods
     s = ""
     e = ""
