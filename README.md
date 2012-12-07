@@ -7,9 +7,9 @@ iptables-runtime-optimizer
 
 Author:     sl0.self@googlemail.com
 
-Date:       2012-11-23
+Date:       2012-12-07
 
-Version:    0.4
+Version:    0.5
 
 License:    GNU General Public License version 3 or later
 
@@ -31,6 +31,8 @@ a maximum benefit of the otimizer-script.
 And as usual, the script must be run as root, which is neccessary for
 any iptables-commands. Used system commands are:
 
+iptables-restore -c < /root/auto-apply
+
 iptables-save -t filter -c
 
 iptables -A  (first inserting a lower rule into a higher position)
@@ -47,7 +49,7 @@ sleep command now is called externally although the internal command works
 well, because it's useful to have an idea of internal state from the 
 outside.
 
-Version 0.4 relies on python 2.6 due to some crashes seen with 
+Version 0.5 relies on python 2.6 due to some crashes seen with 
 python 2.7.3rc2, which is delivered within Debian wheezy for now.
 Using version 2.6 the iptables-optimizer seems to run stable.
 Now some minimal errorchecking is done by evaluation of the iptables
@@ -58,10 +60,15 @@ Seeing the first non-zero returncode, the iptables-optimizer exits.
 The number of rules keeps constant. The python code automatically works 
 on all chains within the filter-group.
 
-For now, there are no doctests or unittests. If there is some time, they
-will come. Internally there is still need of some error-checking, especially
-on the iptables -A command. If that one fails, the ruleset lenght will be 
-decreased by one and the rule will be missing after the -D, ugly ...
+Version 0.5 comes up with a new feature: Looking for a new ruleset and,
+if present, bringing it into the kernel. This is to prevent the administrator
+from some lame repeating jobs applying the new rules while optimizer is
+running...
+
+For now, there are still no doctests or unittests. If there is some 
+time, they will come. Internally there is still need of some error-checking, 
+especially on the iptables -A command. If that one fails, the ruleset length 
+will be decreased by one and the rule will be missing after the -D, ugly ...
 
 Ideas, suggestions, comments welcome.
 

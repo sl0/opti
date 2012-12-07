@@ -8,8 +8,8 @@
     in relation to usage (paket counters)
 
 Author:     sl0.self@googlemail.com
-Date:       2012-11-23
-Version:    0.4
+Date:       2012-12-07
+Version:    0.5
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
@@ -21,8 +21,19 @@ Of course, if there are others, f.e. drop-rules or branches to
 userdefined chains, these are untouched for not destroying
 admistrators artwork.
 
-Still missing is some error-check at least on the iptables -A,
-only without an error there the iptables -D should be run.
+The following is done for the reason of a system-crash while 
+having concurring iptables-commands, which never seem to be a 
+good idea.
+
+optimizer now applies a new ruleset, if given in a file
+/root/auto-apply having executable bit permission set. So the 
+file may be copied onto the system, which can last some time. 
+optimizer ignores it, until the permission is set to executable 
+(chmod +x), which is a simple and very quick operation. After 
+having run the command 'iptables-restore -c < /root/auto-apply'
+the file is renamed to /root/auto-apply-old. 
+Usually it might be used at next reboot-time to get the same 
+state.
 
 Comments, suggestions, improvements welcome!
 
@@ -45,6 +56,29 @@ def execute(cmd):
         print "aborting"
 	sys.exit(1)
     return (stdout, stderr)
+
+def new_ruleset_present(doit=False, pathname='/root/auto-apply'):
+    """look for new rulest given in file: /root/auto-apply
+    if its's present _and_ executable, do corresponding 
+    iptables-restore and rename it to auto-apply-old."""
+    if (os.access(pathname, os.W_OK) and not os.access(pathname, os.X_OK)):
+        print "news coming in, file is busy written..."
+        return False
+    try:
+        if not doit and (os.access(pathname, os.X_OK)):
+            return True
+        if (os.access(pathname, os.X_OK)):
+            print "Action"
+            cmd = "/sbin/iptables-restore -c < " + pathname
+            print "executing:", cmd
+            execute(cmd)
+            oldname = pathname + "-old"
+            print "renaming"
+            os.rename(pathname, oldname)
+    except:
+        #print "cooling"
+        return False
+    return False
 
 def get_cntrs():
     """get chain content through subproces"""
@@ -163,6 +197,8 @@ class Chain():
                     self.mov_up(act, start)
                     par_val += 1
                     ret_val += 1
+                    if new_ruleset_present():
+                        return(len_val, ret_val)
             ret_val += par_val
         return (len_val, ret_val)
 
@@ -206,26 +242,27 @@ if __name__ == "__main__":
     sys.stdout = unbufd
     k = 1       # global loop counter
     d = 450     # duration for long sleep periods
-    #t = 1       # duration for short sleep periods
+    d = 4     # duration for long sleep periods
+    t = .1       # duration for short sleep periods
     s = ""
     e = ""
     try:
         while True:
+            new_ruleset_present(True)
             f = Filter("filter",k)
             r = f.opti()
             if r > 0:
                 print "Round: ", k
-                #(s, e) = extern_sleep(t)
-                #if len(e) > 0:
-                #    print "stderr:", e
-                #print
             else:
                 print "\r resetting counters"
                 reset_cntrs()
                 print "\r sleeping ", d, "seconds ...",
-                (s, e) = extern_sleep(d)
-                if len(e) > 0:
-                    print "stderr:", e
+                for i in range(1, d):
+                    (s, e) = extern_sleep(1)
+                    if len(e) > 0:
+                        print "stderr:", e
+                    if new_ruleset_present():
+                        break
                 print
             k = k + 1
     except KeyboardInterrupt, err:
