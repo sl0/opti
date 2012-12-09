@@ -2,4 +2,4 @@
 # so there is nothing real to do, but pleasure
 
 README:
-	cat README.md
+	cat README.txt
