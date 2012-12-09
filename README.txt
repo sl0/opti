@@ -1,15 +1,15 @@
-=======
-opti.py
-=======
+=====================
+iptables-optimizer.py
+=====================
 
-iptables-runtime-optimizer
-==========================
+Optimize kernels ruleset by sorting in relation to usage
+Goal is to have less interrupt load in a statistical point of view
 
 Author:     sl0.self@googlemail.com
 
-Date:       2012-12-07
+Date:       2012-12-09
 
-Version:    0.5
+Version:    0.6
 
 License:    GNU General Public License version 3 or later
 
@@ -48,6 +48,12 @@ to have an sorted ruleset of current traffic, not on todays traffic. The
 sleep command now is called externally although the internal command works 
 well, because it's useful to have an idea of internal state from the 
 outside.
+
+version 0.6 comes along with a pythonic setup.py, which is a prerequisite
+for upload into pypy archives. Only few changes happend: restore
+is done without counter-values, as its intention is to apply a new
+ruleset coming form the managment system. That one usually does not
+have packet-counters within its generated new ruleset.
 
 Version 0.5 relies on python 2.6 due to some crashes seen with 
 python 2.7.3rc2, which is delivered within Debian wheezy for now.
