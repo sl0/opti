@@ -68,12 +68,11 @@ def new_ruleset_present(doit=False, pathname='/root/auto-apply'):
         if not doit and (os.access(pathname, os.X_OK)):
             return True
         if (os.access(pathname, os.X_OK)):
-            print "Action"
-            cmd = "/sbin/iptables-restore -c < " + pathname
-            print "executing:", cmd
+            cmd = "/sbin/iptables-restore < " + pathname
+            print "Action: executing:", cmd
             execute(cmd)
             oldname = pathname + "-old"
-            print "renaming"
+            print "Action: renaming %s to %s\n" % (pathname, oldname)
             os.rename(pathname, oldname)
     except:
         #print "cooling"
