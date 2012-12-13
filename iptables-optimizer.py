@@ -8,8 +8,8 @@
     in relation to usage (paket counters)
 
 Author:     sl0.self@googlemail.com
-Date:       2012-12-07
-Version:    0.6
+Date:       2012-12-13
+Version:    0.7
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
@@ -68,7 +68,7 @@ def new_ruleset_present(doit=False, pathname='/root/auto-apply'):
         if not doit and (os.access(pathname, os.X_OK)):
             return True
         if (os.access(pathname, os.X_OK)):
-            cmd = "/sbin/iptables-restore < " + pathname
+            cmd = "/sbin/iptables-restore -c < " + pathname
             print "Action: executing:", cmd
             execute(cmd)
             oldname = pathname + "-old"
@@ -172,15 +172,17 @@ class Chain():
         list_point = int(self.find_ins_point(position, part_start))
         insert_point = list_point + 1
         to_del = position + 2
-        ctr = self.cntrs[position]
-        element = self.cntrs.pop(position)
-        self.cntrs.insert(list_point, element)
-        byt = self.bytes[position]
-        element = self.bytes.pop(position)
-        self.bytes.insert(list_point, element)
-        cmd = "-c " + ctr + " " + byt 
-        for rul in self.liste[position][3:]:
-            cmd = cmd + " " + rul
+
+        paket_cnt = self.cntrs.pop(position)
+        self.cntrs.insert(list_point, paket_cnt)
+
+        bytes_cnt = self.bytes.pop(position)
+        self.bytes.insert(list_point, bytes_cnt)
+
+        cmd = "-c " + paket_cnt + " " + bytes_cnt 
+        for rule_text_part in self.liste[position][3:]:
+            cmd = cmd + " " + rule_text_part
+
         execute("/sbin/iptables -I " + self.name + " " + str(insert_point) + " " + cmd)
         execute("/sbin/iptables -D " + self.name + " " + str(to_del))
 
@@ -190,8 +192,10 @@ class Chain():
         len_val = len(self.liste)
         if len_val < 1:
             return (len_val, ret_val)
+        part_no = 0
         self.make_partitions()
         for part in self.partitions:
+            part_no += 1 
             start = part[0]
             last = part[1] + 1
             par_val = 0
@@ -202,6 +206,7 @@ class Chain():
                     ret_val += 1
                     if new_ruleset_present():
                         return(len_val, ret_val)
+            print "%-9s: %3d %-15s %5d  %5d" % (self.name, part_no, part, ret_val, len_val)
             ret_val += par_val
         return (len_val, ret_val)
 
@@ -229,14 +234,14 @@ class Filter():
     def opti(self):
         """optimize all chains, one pass"""
         ret_val = 0;
-        print "%-9s: %-15s %5s  %5s" % ("Chain", "Partitions", "Moved", "Total")
+        print "%-9s: %3s %-15s %5s  %5s" % ("Chain", "No.", "Partitions", "Moved", "Chainlength")
         for name in self.chains.keys():
             (length, moved) = self.chains[name].opti()
             ret_val += moved
             parts = ""
             for part in self.chains[name].partitions:
                 parts += str(part) 
-                print "%-9s: %-15s %5d  %5d" % (name, str(part), moved, length)
+                #print "%-9s: %-15s %5d  %5d" % (name, str(part), moved, length)
         return ret_val
 
 
