@@ -36,7 +36,7 @@ setup(name='iptables-optimizer',
     the chains not for a long period, but in short term meaning is 
     preferred over other traffic..
     """,
-    version='0.6',
+    version='0.7',
     license='GNU General Public License version 3 (or later)',
     platforms='GNU/Linux 2.6.x, GNU/Linux 3.x',
     author='sl0',

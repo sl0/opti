@@ -7,9 +7,9 @@ Goal is to have less interrupt load in a statistical point of view
 
 Author:     sl0.self@googlemail.com
 
-Date:       2012-12-09
+Date:       2012-12-13
 
-Version:    0.6
+Version:    0.7
 
 License:    GNU General Public License version 3 or later
 
@@ -43,13 +43,18 @@ iptables -Z  (just the before long sleep command, counters are reset)
 
 sleep        (sort is ready now visible in process-list)
 
-The later two are new within version 0.3, counter-reset gives the chance,
-to have an sorted ruleset of current traffic, not on todays traffic. The
-sleep command now is called externally although the internal command works 
-well, because it's useful to have an idea of internal state from the 
-outside.
+The last two of these are new within version 0.3, counter-reset gives the 
+chance, to have an sorted ruleset of current traffic, not on todays traffic. 
+The sleep command now is called externally although the internal command 
+works well, because it's useful to have an idea of internal state from the 
+outside. All they are called using their full pathname.
 
-version 0.6 comes along with a pythonic setup.py, which is a prerequisite
+Version 0.7 sorting is quicker now due to an error in counting entries
+before. Works in production environment since version 0.5 without any
+complains but some rumors about better performance at all. The code
+especially in the mov_up def is a little bit beautified now.
+
+Version 0.6 comes along with a pythonic setup.py, which is a prerequisite
 for upload into pypy archives. Only few changes happend: restore
 is done without counter-values, as its intention is to apply a new
 ruleset coming form the managment system. That one usually does not
