@@ -9,7 +9,7 @@
 
 Author:     sl0.self@googlemail.com
 Date:       2012-12-07
-Version:    0.5
+Version:    0.6
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
@@ -154,7 +154,6 @@ class Chain():
         retVal = len(self.partitions)
         return retVal
 
-
     def find_ins_point(self, act, part_start):
         """ find out, where to insert rule due to pkt-cntrs"""
         ret_val = 0
@@ -166,19 +165,24 @@ class Chain():
         return ret_val
 
     def mov_up(self, position, part_start):
-        """move position upwards where it belongs to"""
-        point = 1 + int(self.find_ins_point(position, part_start))
+        """move position upwards where it belongs to
+        list_point is found in cntrs (value start with 0),
+        insert_point in kernel(value starts with 1)
+        """
+        list_point = int(self.find_ins_point(position, part_start))
+        insert_point = list_point + 1
         to_del = position + 2
         ctr = self.cntrs[position]
         element = self.cntrs.pop(position)
-        self.cntrs.insert(point, element)
+        self.cntrs.insert(list_point, element)
         byt = self.bytes[position]
+        element = self.bytes.pop(position)
+        self.bytes.insert(list_point, element)
         cmd = "-c " + ctr + " " + byt 
         for rul in self.liste[position][3:]:
             cmd = cmd + " " + rul
-        execute("/sbin/iptables -I " + self.name + " " + str(point) + " " + cmd)
+        execute("/sbin/iptables -I " + self.name + " " + str(insert_point) + " " + cmd)
         execute("/sbin/iptables -D " + self.name + " " + str(to_del))
-
 
     def opti(self):
         """optimze this chain due to paket counters"""
