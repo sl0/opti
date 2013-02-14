@@ -7,9 +7,9 @@ Goal is to have less interrupt load in a statistical point of view
 
 Author:     sl0.self@googlemail.com
 
-Date:       2012-12-13
+Date:       2013-02-14
 
-Version:    0.7
+Version:    0.8
 
 License:    GNU General Public License version 3 or later
 
@@ -48,6 +48,9 @@ chance, to have an sorted ruleset of current traffic, not on todays traffic.
 The sleep command now is called externally although the internal command 
 works well, because it's useful to have an idea of internal state from the 
 outside. All they are called using their full pathname.
+
+Version 0.8 introduces syslog of all actions except sleeps, not needed,
+but funny
 
 Version 0.7 sorting is quicker now due to an error in counting entries
 before. Works in production environment since version 0.5 without any

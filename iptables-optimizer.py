@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.6
+#!/usr/bin/env python
 # -*- mode: python -*-
 # -*- coding: utf-8 -*-
 #
@@ -8,8 +8,8 @@
     in relation to usage (paket counters)
 
 Author:     sl0.self@googlemail.com
-Date:       2012-12-13
-Version:    0.7
+Date:       2013-02-14
+Version:    0.8
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
@@ -30,10 +30,13 @@ optimizer now applies a new ruleset, if given in a file
 file may be copied onto the system, which can last some time. 
 optimizer ignores it, until the permission is set to executable 
 (chmod +x), which is a simple and very quick operation. After 
-having run the command 'iptables-restore -c < /root/auto-apply'
+having run the command 'iptables-restore < /root/auto-apply'
 the file is renamed to /root/auto-apply-old. 
 Usually it might be used at next reboot-time to get the same 
 state.
+
+iptables-restore with counters did not make any usable effect,
+so it was removed.
 
 Comments, suggestions, improvements welcome!
 
@@ -41,6 +44,7 @@ Have Fun!
 """
 
 import sys
+import syslog
 import os
 import subprocess
 
@@ -50,11 +54,18 @@ def execute(cmd):
     proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (stdout, stderr) = proc.communicate()
     ret_val = proc.returncode
+    success = "ok"
     if len(stderr) > 0 or ret_val > 0:
         print "got err:  ", stderr
-        print "returned: ", str(ret_val)
+        success = str(ret_val)
+        print "returned: ", success
         print "aborting"
-	sys.exit(1)
+        logmsg="exec:%s:%s" % (cmd, success)
+        syslog.syslog(logmsg)
+        sys.exit(1)
+    if "/bin/sleep" not in cmd:
+        logmsg="exec:%s:%s" % (cmd, success)
+        syslog.syslog(logmsg)
     return (stdout, stderr)
 
 def new_ruleset_present(doit=False, pathname='/root/auto-apply'):
@@ -68,7 +79,7 @@ def new_ruleset_present(doit=False, pathname='/root/auto-apply'):
         if not doit and (os.access(pathname, os.X_OK)):
             return True
         if (os.access(pathname, os.X_OK)):
-            cmd = "/sbin/iptables-restore -c < " + pathname
+            cmd = "/sbin/iptables-restore < " + pathname
             print "Action: executing:", cmd
             execute(cmd)
             oldname = pathname + "-old"
@@ -246,6 +257,7 @@ class Filter():
 
 
 if __name__ == "__main__":
+    syslog.syslog('started')
     unbufd = os.fdopen(sys.stdout.fileno(), 'w', 0)
     sys.stdout = unbufd
     k = 1       # global loop counter
