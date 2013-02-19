@@ -31,6 +31,16 @@ class ChainTest(unittest.TestCase):
         self.assertEquals(['9'], c.cntrs)
         self.assertEquals(['10'], c.bytes)
         self.assertEquals(1, c.make_partitions())
+        line = '[280:20000] -A INPUT -i lo -j ACCEPT'
+        self.assertEquals(None, c.append(line.split(" ")))
+        self.assertEquals([['[9:10]', '-A', 'INPUT', '-p', 'tcp',
+                        '-m', 'tcp', '--sport', '0:65535',
+                        '--dport', '23', '-j', 'ACCEPT'],
+                        ['[280:20000]', '-A', 'INPUT', '-i', 'lo', '-j', 'ACCEPT']], 
+                        c.liste)
+        self.assertEquals(2, c.make_partitions())
+        self.assertEquals([[0, 0], [0, 1]], c.partitions)
+
 
 
 if __name__ == "__main__":
