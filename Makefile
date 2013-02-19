@@ -3,3 +3,12 @@
 
 README:
 	cat README.txt
+	@echo "now running tests"
+	@python iptables_optimizer_tests.py
+	@rm -rf *.pyc
+
+tests:
+	python iptables_optimizer_tests.py
+
+clean:
+	@rm -rf *.pyc
