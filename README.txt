@@ -7,9 +7,9 @@ Goal is to have less interrupt load in a statistical point of view
 
 Author:     sl0.self@googlemail.com
 
-Date:       2013-02-14
+Date:       2013-02-24
 
-Version:    0.8
+Version:    0.9
 
 License:    GNU General Public License version 3 or later
 
@@ -28,61 +28,44 @@ sorted. So it should be a challenge for the administrator to create his
 rules using as few policy-changes as possible within his ruleset to have 
 a maximum benefit of the otimizer-script.
 
-And as usual, the script must be run as root, which is neccessary for
-any iptables-commands. Used system commands are:
+Major changes were done from 0.8 to 0.9:
+syslog removed, no external commands
 
-iptables-restore -c < /root/auto-apply
+As of version 0.9, all root access is no longer needed for the pyhton-
+script, because no external commands are needed any longer. Instead, use
+a wrapper outside to read iptables from kernel into a file and put them
+back into kernel from another file, which is created by the wrapper from
+stdout of the python-script. So you may have a better control of what
+happens than ever before. There is no longer support of auto-apply, because
+the wrapper can do this as well if you like it.
 
-iptables-save -t filter -c
+There is one single reason for these changes: nosetests were introduced, 
+about 95% of the code is testet now, but of course thats no guarantee for no 
+programming errors. Be careful, look into the code! Look at the Makefile,
+tests are called from there. And I agree, they are right, those rumors about 
+software is broken by design, if it is not verified by automated tests.
+Because this was broken, but very rare to be seen. For the tests, an
+example of input is included now, see file "reference-input", which is the 
+default filename for reading.
 
-iptables -A  (first inserting a lower rule into a higher position)
+The wrapper may look rather simple:
+-------------------------------------------------------------------
+#/bin/sh
 
-iptables -D  (then deleting the lower rule, which is not used any longer)
+# read actual tables _with_ counters
+iptables-save -c > reference-input
 
-iptables -Z  (just the before long sleep command, counters are reset)
+# sort the rules
+python iptables-optimizer.py > reference-output
 
-sleep        (sort is ready now visible in process-list)
+# write them back to kernel without counter-values
+iptables-restore < reference-output
 
-The last two of these are new within version 0.3, counter-reset gives the 
-chance, to have an sorted ruleset of current traffic, not on todays traffic. 
-The sleep command now is called externally although the internal command 
-works well, because it's useful to have an idea of internal state from the 
-outside. All they are called using their full pathname.
+exit 0
+-------------------------------------------------------------------
 
-Version 0.8 introduces syslog of all actions except sleeps, not needed,
-but funny
-
-Version 0.7 sorting is quicker now due to an error in counting entries
-before. Works in production environment since version 0.5 without any
-complains but some rumors about better performance at all. The code
-especially in the mov_up def is a little bit beautified now.
-
-Version 0.6 comes along with a pythonic setup.py, which is a prerequisite
-for upload into pypy archives. Only few changes happend: restore
-is done without counter-values, as its intention is to apply a new
-ruleset coming form the managment system. That one usually does not
-have packet-counters within its generated new ruleset.
-
-Version 0.5 relies on python 2.6 due to some crashes seen with 
-python 2.7.3rc2, which is delivered within Debian wheezy for now.
-Using version 2.6 the iptables-optimizer seems to run stable.
-Now some minimal errorchecking is done by evaluation of the iptables
-returncode, but still there is no logging to syslog or the like. 
-Of course, stdout might be redirected to some file for later revisions.
-Seeing the first non-zero returncode, the iptables-optimizer exits.
-
-The number of rules keeps constant. The python code automatically works 
-on all chains within the filter-group.
-
-Version 0.5 comes up with a new feature: Looking for a new ruleset and,
-if present, bringing it into the kernel. This is to prevent the administrator
-from some lame repeating jobs applying the new rules while optimizer is
-running...
-
-For now, there are still no doctests or unittests. If there is some 
-time, they will come. Internally there is still need of some error-checking, 
-especially on the iptables -A command. If that one fails, the ruleset length 
-will be decreased by one and the rule will be missing after the -D, ugly ...
+Of course, you may wish to improve the wrapper for your needs. 
+How often it runs, perhaps best may be decided by cron.
 
 Ideas, suggestions, comments welcome.
 
