@@ -53,7 +53,7 @@ The wrapper may look rather simple:
 #/bin/sh
 
 # read actual tables _with_ counters
-iptables-save -c > reference-input
+iptables-save -c -t filter > reference-input
 
 # sort the rules
 python iptables-optimizer.py > reference-output
