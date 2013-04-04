@@ -53,6 +53,6 @@ setup(name='iptables-optimizer',
         'Topic :: System :: Networking :: Firewalls',
         'Topic :: Utilities',
     ],
-    py_modules=['iptables-optimizer'],
+    py_modules=['iptables_optimizer'],
     )
 
