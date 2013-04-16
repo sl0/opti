@@ -83,6 +83,8 @@ class Chain():
                 p_policy = "DROP"
             elif "REJECT" in rule_txt:
                 p_policy = "REJECT"     # we have mercy with LOG or the like
+            else:                       # tribute to other targets
+                p_policy = "undef"
             if p_po_old == None:        # initialize old value once
                 p_po_old = p_policy
 
