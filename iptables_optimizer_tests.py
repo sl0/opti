@@ -174,6 +174,34 @@ class Chain_Test(unittest.TestCase):
         self.assertEquals([[1, 2], [3, 3]], c.partitions)
         self.assertEquals((3, 2), c.opti())
 
+    def test_04_insert_five_rules_with_logdrop(self):
+        c = Chain("INPUT", "DROP")
+        self.assertEquals("INPUT", c.name)
+        self.assertEquals("DROP", c.policy)
+        line = '[9:10] -A INPUT -p tcp -m tcp --dport 23 -j ACCEPT'
+        c.append(line.split(" "))
+        line = '[18:20] -A INPUT -i sl0 -j ACCEPT'
+        c.append(line.split(" "))
+        line = '[83:436] -A INPUT -j logdrop'
+        c.append(line.split(" "))
+        line = '[28:220] -A INPUT -i lo -j ACCEPT'
+        c.append(line.split(" "))
+        line = '[18:20] -A INPUT -i sl1 -j ACCEPT'
+        c.append(line.split(" "))
+        result = [['[9:10]', '-A', 'INPUT', '-p', 'tcp', '-m', 'tcp',
+                    '--dport', '23', '-j', 'ACCEPT'],
+                    ['[18:20]', '-A', 'INPUT', '-i', 'sl0', '-j', 'ACCEPT'],
+                    ['[83:436]', '-A', 'INPUT', '-j', 'logdrop'],
+                    ['[28:220]', '-A', 'INPUT', '-i', 'lo', '-j', 'ACCEPT'],
+                    ['[18:20]', '-A', 'INPUT', '-i', 'sl1', '-j', 'ACCEPT']]
+        self.assertEquals(result, c.liste)
+        self.assertEquals(3, c.make_partitions())
+        expect = [[1, 2], [3, 3], [4, 5]]
+        print "P:", c.partitions
+        print "W:", expect, " ... or something like that"
+        self.assertEquals(expect, c.partitions)
+        #self.assertTrue(False) # force textual output
+
 
 class Filter_Test(unittest.TestCase):
     '''some first tests for class Filter'''
