@@ -88,7 +88,6 @@ class Chain():
                 p_policy = "undef"
             if p_po_old == None:        # initialize old value once
                 p_po_old = p_policy
-
             if (p_policy == p_po_old):
                 p_ende = index + 1
             else:
@@ -107,7 +106,7 @@ class Chain():
         return retVal
 
     def find_ins_point(self, act, part_start):
-        """ find out, where to insert rule due to pkt-cntrs"""
+        """find out, where to insert rule due to pkt-cntrs"""
         val = int(self.cntrs[act])
         for run in range(part_start, act):
             if int(self.cntrs[run]) < val:
@@ -182,15 +181,19 @@ class Filter():
             print filename + ": ", err.strerror
 
     def opti(self):
-        """optimize all chains, one pass, ready!"""
+        """optimize all chains, one pass, and ready
+        return sum of moved counts and partitions list for debugging
+        """
         ret_val = 0
+        msg = "#chainname  : moves  partitions\n"
         for name in self.chains.keys():
             (length, moved) = self.chains[name].opti()
             ret_val += moved
             parts = ""
             for part in self.chains[name].partitions:
                 parts += str(part)
-        return ret_val
+            msg += "#%-11s: %5d  %s\n" % (name, moved, parts)
+        return (ret_val, msg)
 
     def sequence(self):
         """keep track of all chainnames, predefined first with policy"""
@@ -234,7 +237,8 @@ if __name__ == "__main__":
     sys.stdout = unbufd
     try:
         f = Filter()
-        r = f.opti()
+        result, msg = f.opti()
+        sys.stderr.write(msg)  # print partition-table to stderr 
         print f.show(),
     except KeyboardInterrupt, err:
         print "\rUser stopped, execution terminated"

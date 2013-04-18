@@ -230,11 +230,11 @@ class Filter_Test(unittest.TestCase):
         """Filter_Test: optimize, check 30 moves and partitions"""
         f = Filter("filter", "reference-input")
         cnt, msg = f.opti()
-        expect = """#  Chain   : moved  partitions
-#FORWARD   :     6  [1, 4][5, 5]
-#INPUT     :    18  [1, 2][3, 3][4, 11][12, 12][13, 16][17, 17][18, 18][19, 20]
-#IPSEC     :     0  [1, 1]
-#OUTPUT    :     6  [1, 4][5, 5][6, 6]
+        expect = """#chainname  : moves  partitions
+#FORWARD    :     6  [1, 4][5, 5]
+#INPUT      :    18  [1, 2][3, 3][4, 11][12, 12][13, 16][17, 17][18, 18][19, 20]
+#IPSEC      :     0  [1, 1]
+#OUTPUT     :     6  [1, 4][5, 5][6, 6]
 """
         self.assertEquals(30, cnt)
         #print msg
