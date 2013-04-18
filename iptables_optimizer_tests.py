@@ -209,8 +209,8 @@ class Chain_Test(unittest.TestCase):
         self.assertEquals(result, c.liste)
         self.assertEquals(3, c.make_partitions())
         expect = [[1, 2], [3, 3], [4, 5]]
-        print "P:", c.partitions
-        print "W:", expect, " ... or something like that"
+        #print "P:", c.partitions
+        #print "W:", expect, " ... or something like that"
         self.assertEquals(expect, c.partitions)
         #self.assertTrue(False) # force textual output
 
@@ -227,9 +227,18 @@ class Filter_Test(unittest.TestCase):
         self.assertIsInstance(Filter("filter", "reference-input"), Filter)
 
     def test_03_optimize_algorithm(self):
-        """Filter_Test: optimize, check for 30 move-actions"""
+        """Filter_Test: optimize, check 30 moves and partitions"""
         f = Filter("filter", "reference-input")
-        self.assertEquals(30, f.opti())
+        cnt, msg = f.opti()
+        expect = """#  Chain   : moved  partitions
+#FORWARD   :     6  [1, 4][5, 5]
+#INPUT     :    18  [1, 2][3, 3][4, 11][12, 12][13, 16][17, 17][18, 18][19, 20]
+#IPSEC     :     0  [1, 1]
+#OUTPUT    :     6  [1, 4][5, 5][6, 6]
+"""
+        self.assertEquals(30, cnt)
+        #print msg
+        self.assertEquals(expect, msg)
 
     def test_04_filter_output(self):
         """Filter_Test: check output for reference-input"""
