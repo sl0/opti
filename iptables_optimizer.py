@@ -69,6 +69,7 @@ class Chain():
         It returns len(self.partitions), used for testing purpose.
         """
         self.partitions = []              # start with empty list
+        number = 0
         p_policy = "DROP"
         p_po_old = None
         p_strt = 1
@@ -85,7 +86,8 @@ class Chain():
             elif "REJECT" in rule_txt:
                 p_policy = "REJECT"     # we have mercy with LOG or the like
             else:                       # tribute to other targets
-                p_policy = "undef"
+                number += 1
+                p_policy = "undef%05d" % (number)
             if p_po_old == None:        # initialize old value once
                 p_po_old = p_policy
             if (p_policy == p_po_old):
