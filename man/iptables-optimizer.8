@@ -1,5 +1,5 @@
 
-.TH iptables-optimizer 1 "June 2013" "Johannes Hubertz" " "
+.TH iptables-optimizer 8 "June 2013" "Johannes Hubertz" " "
 
 .SH NAME
 iptables-optimizer \- program to optimize iptables filter-chains in kernel depending on their usage counters
@@ -11,7 +11,7 @@ iptables-optimizer \- program to optimize iptables filter-chains in kernel depen
 .SH DESCRIPTION
 .B iptables-optimizer
 is used to sort iptables-rules read from file in relation to the values of their packet-counters. And of course,
-administrators artwork is untouched. Sorting only happens in consecutve blocks of accept or drop statements, 
+administrators artwork is untouched. Sorting only happens in consecutive blocks of accept or drop statements, 
 never across their borders. Within these blocks are called partitions and so they behave. 
 Lets look at the following three lines of code:
 
