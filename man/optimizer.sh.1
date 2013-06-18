@@ -1,0 +1,51 @@
+
+.TH optimizer.s 1 "June 2013" "Johannes Hubertz" " "
+
+.SH NAME
+optimizer.sh \- the wrapper for iptables-optimizer
+
+.SH SYNOPSIS
+.B optimizer.sh
+.br
+
+.SH DESCRIPTION
+.B optimizer.sh 
+needs to be run as root because of the privileged programs it executes. 
+Usually it is run every now and then by cron.
+
+First it tries to find a file named "/root/auto-apply". If 
+present and executable, that will be feeded to iptables-restore, 
+renamed and exit. If present and not (yet) executable nothing 
+is done but exit. Thats my way of introducing new rulesets 
+into my machines.
+
+If there is no such file, the normal way of 
+doing follows, 
+.B essentials only
+shown here:
+
+.B iptables-save -t filter -c /root/reference-input
+
+.B iptables-optimzer > /root/reference-output
+
+.B iptables-restore < /root/reference-output
+
+Error checking as well as logging within the wrapper showed to be 
+somehow useful, especially for finding errors afterwards.
+
+This wrapper script was neccessary as my tribute to different 
+handlings of pythonic subprocess in different python versions in 
+the latest Debian stable releases.
+
+.SH OPTIONS
+NONE
+
+.SH AUTHOR
+Johannes Hubertz <johannes@hubertz.de> wrote this in 2013.
+Any comments welcome anytime.
+
+.SH "SEE ALSO"
+.BR iptables-optimizer (8)
+.BR iptables (8)
+.BR iptables-save (8)
+.BR iptables-restore (8)

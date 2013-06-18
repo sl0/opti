@@ -1,0 +1,56 @@
+
+.TH iptables-optimizer 1 "June 2013" "Johannes Hubertz" " "
+
+.SH NAME
+iptables-optimizer \- program to optimize iptables filter-chains in kernel depending on their usage counters
+
+.SH SYNOPSIS
+.B iptables-optimizer
+.br
+
+.SH DESCRIPTION
+.B iptables-optimizer
+is used to sort iptables-rules read from file in relation to the values of their packet-counters. And of course,
+administrators artwork is untouched. Sorting only happens in consecutve blocks of accept or drop statements, 
+never across their borders. Within these blocks are called partitions and so they behave. 
+Lets look at the following three lines of code:
+
+.PP
+iptables-save -t filter -c > reference-input
+
+iptables-optimizer > reference-output
+
+iptables-restore < reference-output
+
+will do all you need. Of course, you might want to do it by cron every now and then. For your convienience
+a wrapper shellscript comes onboard: optimizer.sh
+
+
+.SH "EXIT STATUS"
+iptables-optimizer returns a value of 0.
+
+.SH VERSIONS
+iptables-optimizer
+.B should
+be compatibe to any iptables implementations out in the wild. If not, keep me informed, thanks. I'll do my very best.
+
+.SH OPTIONS
+.B
+.IP NONE
+No options are builtin for now.
+
+.SH HISTORY
+iptables-optimizer has grown from first ideas over some month and many errors to a productive state. First
+tries to use subproces within the python soon led into problems using different python versions on different
+debian releases. So these tasks were done on shell level.
+
+.SH AUTHOR
+Johannes Hubertz <johannes@hubertz.de> wrote this in 2013.
+Any comments welcome anytime.
+
+.SH "SEE ALSO"
+.BR optimizer.sh (8)
+.BR iptables (8)
+.BR iptables-save (8)
+.BR iptables-restore (8)
+
