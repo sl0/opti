@@ -25,6 +25,13 @@ iptables-restore < reference-output
 will do all you need. Of course, you might want to do it by cron every now and then. For your convienience
 a wrapper shellscript comes onboard: optimizer.sh
 
+.SH "OUTPUT"
+Output is written to stdout and stderr simultaneously. 
+.B stdout 
+should be written to a file, 
+which then can be feeded into iptables-restore. 
+.B stderr 
+detailed shows all the prevoiusly mentioned partitions in the chains.
 
 .SH "EXIT STATUS"
 iptables-optimizer returns a value of 0.
