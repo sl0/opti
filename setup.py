@@ -8,39 +8,27 @@ setup(name='iptables-optimizer',
     iptables-optimizer
     ==================
 
-    This little python script must be run as root, because it 
-    spawns a lot of iptables-commands using the python-builtin 
-    subprocess.
+    This little python script is run by a wrapper (shell), driven
+    by cron. The wrapper needs to be run as root because it calls
+    iptables-save and iptables-restore.
 
     Goal is to have all chains sorted by decreasing packet-counters,
     as each incoming packet is searched along the chains within one
     single core during interrupt processing. From a statistical point
     of view, the load decreases by having them sorted by the counters,
     if you have a lot of unused but neccessary commands within the
-    chains. The sorting is done by copying a rule to a more prominent
-    place within the same chain, some resticitions are respected.
-    After successful copy the rule in it original place is deleted.
+    chains. The sorting is done within the lists build from the
+    iptables-save. Afterwards printed to stdout gives you a chance to
+    inspect them before restoring to the kernel by iptables-restore.
 
-    Every sort-run through the chains, where nothing was changed,
-    two things are done: 
-        1st) the packet counters are all reset to zero.
-        2nd) a file is looked up: /root/auto-apply
-    It is looked up for read/write and executable access-rights, 
-    both must be set. If not, nothing is done. If set, some simple
-    assumptions are done: It has iptables-save format, and it sure 
-    expresses the administrators intention. So then go along, the
-    following command drives it into the kernel: 
-        iptables-restore /root/auto-apply
-    If it is not present, nothing but sleeping is done, then again 
-    the sorting is done. Short duration heavy traffic will change 
-    the chains not for a long period, but in short term meaning is 
-    preferred over other traffic..
+    And of course, some resticitions are respected, especially no
+    rules with different policies are sorted crossover.
     """,
-    version='0.8',
+    version='0.9.1',
     license='GNU General Public License version 3 (or later)',
     platforms='GNU/Linux 2.6.x, GNU/Linux 3.x',
-    author='sl0',
-    author_email='sl0.self@googlemail.com',
+    author='Johannes Hubertz',
+    author_email='Johannes@hubertz.de',
     url='https://github.com/sl0/opti.git',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -49,10 +37,10 @@ setup(name='iptables-optimizer',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
         'Topic :: Security',
         'Topic :: System :: Networking :: Firewalls',
         'Topic :: Utilities',
     ],
     py_modules=['iptables_optimizer'],
     )
-
