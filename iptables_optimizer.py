@@ -7,9 +7,9 @@
     optimize iptables ruleset in userland
     in relation to usage (paket counters)
 
-Author:     sl0.self@googlemail.com
-Date:       2013-02-24
-Version:    0.9
+Author:     Johannes Hubertz johannes@hubertz.de
+Date:       2013-06-20
+Version:    0.9.1
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
@@ -19,7 +19,7 @@ All chains are partitioned now, sorting is done inside the
 partitions. Sequence of partitions is never changed, these keep
 untouched for not destroying admistrators artwork.
 
-You will need a wrapper script, see README.txt
+You will need a wrapper script, use optimizer.sh as example.
 
 Comments, suggestions, improvements welcome!
 
