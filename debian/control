@@ -1,0 +1,25 @@
+Source: iptables-optimizer
+Maintainer: Johannes Hubertz <johannes@hubertz.de>
+Section: python
+Priority: optional
+Build-Depends: python-all (>= 2.6.6-3), debhelper (>= 9)
+Standards-Version: 3.9.3
+
+Package: python-iptables-optimizer
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}
+Description: sort iptables due to packet-counters
+ as read their values from file. stdout comes 
+ with [0:0] for iptables-restore -c
+ stderr prints partitions and changes within as 
+ numbers for your convienience, may be logged
+ .
+ optimizer.sh is a wrapper shellscript for checking, 
+ logging and kernel-reads and -writes, and it calls 
+ the pythonic iptables-optimizer.
+ .
+ License: GPLv3, or any newer version, see LICENSE.txt
+ Author:  Johannes Hubertz   <johannes@hubertz.de>
+ Version: 0.9.1
+ Date:    2013-06-24
+ Have fun!

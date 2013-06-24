@@ -1,0 +1,49 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+export DH_VERBOSE=1
+export DH_OPTIONS=-v
+
+build: build-stamp
+
+build-stamp:
+	dh_testdir
+
+clean:
+	dh_clean
+
+install:	build
+	dh_prep
+	dh_installdirs /usr/sbin
+
+	cd $(CURDIR)/debian/python-iptables-optimizer/usr/sbin && \
+		cp $(CURDIR)/iptables_optimizer.py iptables-optimizer && \
+		chmod 755 iptables-optimizer
+	cd $(CURDIR)/debian/python-iptables-optimizer/usr/sbin && \
+		cp $(CURDIR)/optimizer.sh optimizer.sh && \
+		chmod 755 optimizer.sh
+	dh_lintian
+
+# Build architecture-independent files here.
+build-arch: build
+build-indep: build
+
+# Note that the following form is recommended however:
+
+build-arch: build-stamp
+build-indep: build-stamp
+binary-indep: build install
+	dh_installchangelogs
+	dh_install
+	dh_installdocs
+	dh_installman
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure
+

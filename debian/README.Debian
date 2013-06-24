@@ -1,0 +1,8 @@
+iptables-optimizer
+------------------
+
+ This pyhton executable works with python2.6,
+ python2.7 and python3.2 as tested in sources
+ with tox, see tox.ini in the source package.
+
+ -- Johannes HUbertz <johannes@hubertz.de>

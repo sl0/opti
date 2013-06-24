@@ -1,0 +1,5 @@
+iptables-optimizer (0.9.1-1) unstable; urgency=low
+
+  * Initial release closes (still unknown)
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Tue, 18 Jun 2013 23:17:41 +0200
