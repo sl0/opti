@@ -53,7 +53,7 @@ LINES=`/bin/cat $TMI | /usr/bin/wc -l `
 # Step 2: pythonscript has no foreseen errorvalue for now.
 # call in /sbin, stdout: input for restore, stderr: partitions
 
-sbin/iptables_optimizer.py  > $TMO 2>$STE
+/usr/sbin/iptables-optimizer  > $TMO 2>$STE
 
 LINEO=`/bin/cat $TMO | /usr/bin/wc -l `
 [ $LINEO -ne $LINES ] && /bin/mv $TMI $TIR
