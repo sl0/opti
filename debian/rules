@@ -36,7 +36,7 @@ binary-indep: build install
 	dh_installchangelogs
 	dh_install
 	dh_installdocs
-	dh_installman
+	dh_installman --language=C man/*
 	dh_compress
 	dh_fixperms
 	dh_installdeb
