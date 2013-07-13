@@ -1,5 +1,5 @@
-iptables-optimizer (0.9.1-1) unstable; urgency=low
+iptables-optimizer (0.9.1) unstable; urgency=low
 
-  * Initial release closes #714021
+  * Initial release closes: #714021
 
- -- Johannes Hubertz <johannes@hubertz.de>  Tue, 18 Jun 2013 23:17:41 +0200
+ -- Johannes Hubertz <johannes@hubertz.de>  Tue, 13 Jul 2013 19:45:41 +0200
