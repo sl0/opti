@@ -20,8 +20,8 @@ install:	build
 		cp $(CURDIR)/iptables_optimizer.py iptables-optimizer && \
 		chmod 755 iptables-optimizer
 	cd $(CURDIR)/debian/python-iptables-optimizer/usr/sbin && \
-		cp $(CURDIR)/optimizer.sh optimizer.sh && \
-		chmod 755 optimizer.sh
+		cp $(CURDIR)/optimizer optimizer && \
+		chmod 755 optimizer
 	dh_lintian
 
 # Build architecture-independent files here.
@@ -39,6 +39,7 @@ binary-indep: build install
 	dh_installman --language=C man/*
 	dh_compress
 	dh_fixperms
+	dh_python2
 	dh_installdeb
 	dh_gencontrol
 	dh_md5sums
