@@ -43,5 +43,5 @@ setup(name='iptables-optimizer',
         'Topic :: Utilities',
     ],
     py_modules=['iptables_optimizer'],
-    scripts=['optimizer.sh'],
+    scripts=['iptables-optimizer'],
     )
