@@ -1,63 +1,65 @@
 
-.TH iptables-optimizer 8 "June 2013" "Johannes Hubertz" " "
+.TH iptables-optimizer 8 "July 2013" "Johannes Hubertz" " "
 
 .SH NAME
-iptables-optimizer \- program to optimize iptables filter-chains in kernel depending on their usage counters
+iptables-optimizer \- optimize iptables filter-chains in kernel depending on their usage counters
 
 .SH SYNOPSIS
-.B iptables-optimizer
+.B iptables-optimizer [-v]
 .br
 
 .SH DESCRIPTION
 .B iptables-optimizer
-is used to sort iptables-rules read from file in relation to the values of their packet-counters. And of course,
-administrators artwork is untouched. Sorting only happens in consecutive blocks of accept or drop statements, 
-never across their borders. Within these blocks are called partitions and so they behave. 
-Lets look at the following three lines of code:
+is used to sort iptables-rules in relation to the values of their 
+packet-counters. And of course, administrators artwork is untouched. 
+Sorting only happens in consecutive blocks of accept or drop statements, 
+never across their borders. Within these blocks are called partitions 
+and so they behave. 
 
-.PP
-iptables-save -t filter -c > reference-input
+iptables-optimizer is shipped in two files, a shell wrapper an a python exec.
+The wrapper is my tribute to different functions of python subprocess,
+it runs in three steps, working directory is /var/run, id=0 is neccessary:
 
-iptables-optimizer > reference-output
+.B iptables-save -t filter -c > reference-input
 
-iptables-restore < reference-output
+.B iptables_optimizer.py > reference-output
 
-will do all you need. Of course, you might want to do it by cron every now and then. For your convienience
-a wrapper shellscript comes onboard: optimizer
+.B iptables-restore < reference-output
 
-.SH "OUTPUT"
-Output is written to stdout and stderr simultaneously. 
-.B stdout 
-should be written to a file, 
-which then can be feeded into iptables-restore. 
-.B stderr 
-detailed shows all the prevoiusly mentioned partitions in the chains.
+Of course, you might want to run it by cron every now and then. 
+
+.SH "LOG"
+Steps and count of iptables is reported via syslog.
+
+.SH "OPTIONS"
+.IP -v 
+additionally shows chains, partitions and moves in log via syslog. 
+No check of option content is done.
 
 .SH "EXIT STATUS"
-iptables-optimizer returns a value of 0.
+iptables-optimizer returns a value of 0. Other values are not foreseen.
 
-.SH VERSIONS
+.SH "COMPATIBILITY"
 iptables-optimizer
 .B should
 be compatibe to any iptables implementations out in the wild. If not, keep me informed, thanks. I'll do my very best.
 
-.SH OPTIONS
-.B
-.IP NONE
-No options are builtin for now.
-
-.SH HISTORY
-iptables-optimizer has grown from first ideas over some month and many errors to a productive state. First
-tries to use subproces within the python soon led into problems using different python versions on different
+.SH "HISTORY"
+iptables-optimizer has grown from first ideas over some month and many 
+errors to a productive state. First tries to use subproces within the 
+python soon led into problems using different python versions on different
 debian releases. So these tasks were done on shell level.
 
-.SH AUTHOR
-Johannes Hubertz <johannes@hubertz.de> wrote this in 2013.
-Any comments welcome anytime.
-
 .SH "SEE ALSO"
-.BR optimizer.sh (8)
 .BR iptables (8)
 .BR iptables-save (8)
 .BR iptables-restore (8)
+
+.SH "LICENSE"
+GNU General Public License version 3 or any newer version applies to
+iptables-optimizer.
+
+.SH "AUTHOR"
+Johannes Hubertz <johannes@hubertz.de> wrote this in 2013.
+Any comments welcome anytime.
 
