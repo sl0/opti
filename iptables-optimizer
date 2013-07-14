@@ -13,16 +13,16 @@ AUTO=/root/auto-apply
 LOG="/usr/bin/logger -t $NAME -p user.warn "
 
 # usual suspects: input and output
-TMI=/root/reference-input
-TMO=/root/reference-output
+TMI=/var/run/reference-input
+TMO=/var/run/reference-output
 
 # unsusual suspects: on error, these are kept
 # if present, nothings more done for investigations
-TIR=/root/ref-with-error-in
-TOR=/root/ref-with-error-out
+TIR=/var/run/ref-with-error-in
+TOR=/var/run/ref-with-error-out
 
-# stderr shall be written to
-STE=/root/iptables-optimizer-partitions
+# stderr shall be written to, test if -v option given?
+STE=/var/run/iptables-optimizer-partitions
 [ $# -eq 0 ] && STE=/dev/null
 
 # any error on last run?
@@ -34,7 +34,7 @@ STE=/root/iptables-optimizer-partitions
 
 # look for new ruleset ready, after scp need chmod +x as ready and go indicator
 [ -x $AUTO ] && /sbin/iptables-restore $AUTO
-[ -x $AUTO ] && /sbin/iptables-save -t filter > /root/rules-saved-filter-only
+[ -x $AUTO ] && /sbin/iptables-save -t filter > /var/run/rules-saved-filter-only
 [ -x $AUTO ] && echo "renaming file to ${AUTO}-${DATE}" | $LOG  && /bin/true
 [ -x $AUTO ] && /bin/mv ${AUTO} ${AUTO}-${DATE} && exit 0
 
@@ -53,7 +53,7 @@ LINES=`/bin/cat $TMI | /usr/bin/wc -l `
 # Step 2: pythonscript has no foreseen errorvalue for now.
 # call in /sbin, stdout: input for restore, stderr: partitions
 
-/usr/sbin/iptables-optimizer  > $TMO 2>$STE
+/usr/sbin/iptables_optimizer.py  > $TMO 2>$STE
 
 LINEO=`/bin/cat $TMO | /usr/bin/wc -l `
 [ $LINEO -ne $LINES ] && /bin/mv $TMI $TIR
@@ -86,10 +86,10 @@ ERR=$?
 [ $ERR -gt 0 ] && echo "Step 4: retry with error: ${ERR}, lock and abort" | $LOG 
 [ $ERR -gt 0 ] && /bin/mv $TMI $TIR
 [ $ERR -gt 0 ] && /bin/mv $TMO $TOR
-[ $ERR -gt 0 ] && /bin/mv /tmp/optimizer-last-run /root/ref-last-stdout_stderror
+[ $ERR -gt 0 ] && /bin/mv /var/run/optimizer-last-run /var/run/ref-last-stdout_stderror
 [ $ERR -gt 0 ] && /root/bin/flush
 [ $ERR -gt 0 ] && echo "Step5: let filtercheck do the rest" | $LOG 
 
 exit 1
-) 2>&1 | /usr/bin/tee /tmp/optimizer-last-run
+) 2>&1 | /usr/bin/tee /var/run/optimizer-last-run
 # EoF
