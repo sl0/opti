@@ -17,11 +17,11 @@ install:	build
 	dh_installdirs /usr/sbin
 
 	cd $(CURDIR)/debian/python-iptables-optimizer/usr/sbin && \
-		cp $(CURDIR)/iptables_optimizer.py iptables-optimizer && \
-		chmod 755 iptables-optimizer
+		cp $(CURDIR)/iptables_optimizer.py iptables_optimizer.py && \
+		chmod 755 iptables_optimizer.py
 	cd $(CURDIR)/debian/python-iptables-optimizer/usr/sbin && \
-		cp $(CURDIR)/optimizer optimizer && \
-		chmod 755 optimizer
+		cp $(CURDIR)/iptables-optimizer iptables-optimizer && \
+		chmod 755 iptables-optimizer
 	dh_lintian
 
 # Build architecture-independent files here.
