@@ -1,4 +1,4 @@
-Source: iptables-optimizer
+Source: python-iptables-optimizer
 Maintainer: Johannes Hubertz <johannes@hubertz.de>
 Section: python
 Priority: optional
