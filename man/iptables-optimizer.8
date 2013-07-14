@@ -28,13 +28,20 @@ it runs in three steps, working directory is /var/run, id=0 is neccessary:
 
 Of course, you might want to run it by cron every now and then. 
 
+On startup iptables-optimizer first checks, if a file /root/auto-apply
+exists. If it does and it is not executable, iptables-optimizer
+logs and simply exits. If it is executable, then this is given 
+to iptables-restore, renamed and exit.  The renaming follows up 
+a simple datetime strategy, this action is logged as well. Thats
+my way of firing new rules into the machine.
+
 .SH "LOG"
-Steps and count of iptables is reported via syslog.
+Steps and count of iptables are reported via syslog.
 
 .SH "OPTIONS"
 .IP -v 
 additionally shows chains, partitions and moves in log via syslog. 
-No check of option content is done.
+No check of option content is done for simplicity.
 
 .SH "EXIT STATUS"
 iptables-optimizer returns a value of 0. Other values are not foreseen.
