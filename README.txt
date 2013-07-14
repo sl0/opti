@@ -6,9 +6,9 @@ Optimize kernels ruleset by sorting in relation to usage.
 
 Author:     Johannes Hubertz <johannes@hubertz.de>
 
-Date:       2013-06-20
+Date:       2013-07-14
 
-Version:    0.9.1
+Version:    0.9.2
 
 License:    GNU General Public License version 3 or later
 
@@ -33,6 +33,14 @@ rules are sorted. So it should be a challenge for the
 administrator to create his rules using as few policy-
 changes as possible within his ruleset to have a maximum
 benefit of the otimizer-script.
+
+Changes to 0.9.2:
+Debianization on the run, multiple corections of path
+wrapper now comes as /usr/sbin/iptables-optimizer, the
+python as /usr/sbin/iptables_optimizer.py
+workfiles now all moved to /var/run, auto-apply still
+kept in /root and mentinend in the only kept man-page
+iptables-optimizer.8
 
 Changes to 0.9.1:
 Now the wrapper is included, see optimize.sh. It can do

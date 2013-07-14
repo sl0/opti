@@ -8,8 +8,8 @@
     in relation to usage (paket counters)
 
 Author:     Johannes Hubertz johannes@hubertz.de
-Date:       2013-06-20
-Version:    0.9.1
+Date:       2013-07-14
+Version:    0.9.2
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset

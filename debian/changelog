@@ -1,3 +1,16 @@
+python-iptables-optimizer (0.9.2) unstable; urgency=low
+
+  * [6fd7fe6] auto-apply now mentoned first time
+  * [66200d8] renaming optimizer.sh to iptables-optimizer mentionend in setup.py
+  * [811e3df] working dir changed to /var/run as preferred by debian
+  * [7a9e14b] optimizer deleted, iptables-optimizer sounds better
+  * [5c84f15] setup long_description now read from README.txt
+  * [4cdfd34] MANIFEST adapted to renaming to iptables-optimizer
+  * [29087cf] rules now produce a working iptables-optimizer
+  * [3bd25df] iptables-optimizer now on debian paths mostly.
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Sun, 14 Jul 2013 23:27:15 +0200
+
 python-iptables-optimizer (0.9.1) unstable; urgency=low
 
   * Initial release closes: #714021
