@@ -1,11 +1,28 @@
 #!/bin/sh
+#
+# wrapper for python skript iptables_optimizer.py
+#
+# License:  GNU General Public License version 3 or newer
+# Author:   Johannes Hubertz <johannes@hubertz.de>
+# Version:  0.9.3
+# Date:     2013-07-16
+#
+# Fullname: /usr/sbin/iptables-optimizer
+# Options:  -v
+# if givem, logging is more verbose about chains, partitions and moves
 
 export LANG=C
 
+# NAME is for logging, the shorter the better!
 NAME="opti"
 DATE=`/bin/date "+%Y%m%d-%H%M%S"`
 
 (
+# /root/auto-apply is a fresh ruleset brought in by the admin.
+# if not present, no problem.
+# if present and not executable, writing is in progress, nothing done
+# if present and executable, iptables-restore is called to load it.
+#
 # new ruleset is found by name:
 AUTO=/root/auto-apply
 
