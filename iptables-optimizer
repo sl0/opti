@@ -74,21 +74,13 @@ ERR=$?
 [ $ERR -eq 0 ] && exit 0
 # no error in step 3, all done!
 
-# if error, try to repair, show in logging
-[ $ERR -gt 0 ] && echo "Step 3: $LINES rules, error: ${ERR}, retry" | $LOG 
-[ $ERR -gt 0 ] && /root/bin/flush && /bin/sleep 10 && /sbin/iptables-restore  < $TMO
-ERR=$?
-[ $ERR -eq 0 ] && echo "Step 4: retry without error" | $LOG 
-[ $ERR -eq 0 ] && exit 0
-
-# if still some error, no more try to repair, some other job shall do, and
+# if some error, no try to repair, some other job shall do, and
 # prevent from further running.
-[ $ERR -gt 0 ] && echo "Step 4: retry with error: ${ERR}, lock and abort" | $LOG 
+[ $ERR -gt 0 ] && echo "Step 3: retry with error: ${ERR}, lock and abort" | $LOG 
 [ $ERR -gt 0 ] && /bin/mv $TMI $TIR
 [ $ERR -gt 0 ] && /bin/mv $TMO $TOR
 [ $ERR -gt 0 ] && /bin/mv /var/run/optimizer-last-run /var/run/ref-last-stdout_stderror
-[ $ERR -gt 0 ] && /root/bin/flush
-[ $ERR -gt 0 ] && echo "Step5: let filtercheck do the rest" | $LOG 
+[ $ERR -gt 0 ] && echo "Step4: renaming done, prevent repeated failures" | $LOG 
 
 exit 1
 ) 2>&1 | /usr/bin/tee /var/run/optimizer-last-run
