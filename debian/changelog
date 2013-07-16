@@ -1,4 +1,4 @@
-python-iptables-optimizer (0.9.2) unstable; urgency=low
+iptables-optimizer (0.9.2) unstable; urgency=low
 
   * [6fd7fe6] auto-apply now mentoned first time
   * [66200d8] renaming optimizer.sh to iptables-optimizer mentionend in setup.py
