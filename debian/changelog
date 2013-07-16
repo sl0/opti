@@ -1,3 +1,12 @@
+iptables-optimizer (0.9.3) unstable; urgency=low
+
+  * package name now is: iptables-optimizer
+  * [24758ec] non iptables-optimizer internal calls to non shipped flush removed
+  * [af72ad9] Readme adapted to new package-name
+  * [9dff630] nice header now in iptables-optimizer
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Tue, 16 Jul 2013 22:39:54 +0200
+
 iptables-optimizer (0.9.2) unstable; urgency=low
 
   * [6fd7fe6] auto-apply now mentoned first time
