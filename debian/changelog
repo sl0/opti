@@ -1,3 +1,18 @@
+iptables-optimizer (0.9.4) unstable; urgency=low
+
+  * [e7b7496] auto-apply moved to /var/cache, postinst needed
+  * [3423fed] create /var/cache/auto-apply with drwx------
+  * [2e6f94c] debian/iptables-optimizer.postinst.debhelper renamed
+  * [c7be05a] /root/auto-apply moved for policy reasons
+  * [72e1d79] auto-apply moved to /var/cache/auto-apply
+  * [405fb50] man-page adapted to new path of auto-apply
+  * [62b41ba] man page clearified exit status: 0 or 1
+  * [2fb28e6] i-o.py now moved to /usr/shared/pyshared/, no exec
+  * [da55905] postinst now set -e, no path for binaries
+  * [817dfeb] python moved to /usr/share/pyshared
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Wed, 17 Jul 2013 18:11:29 +0200
+
 iptables-optimizer (0.9.3) unstable; urgency=low
 
   * package name now is: iptables-optimizer
