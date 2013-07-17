@@ -1,7 +1,0 @@
-#!/bin/sh
-# iptables-optimizer postinst
-#
-# create directory for admins auto-apply files
-#
-/bin/mkdir -p /var/cache/auto-apply
-exit 0
