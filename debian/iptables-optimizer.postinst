@@ -8,3 +8,4 @@ mkdir -p  /var/cache/auto-apply
 chmod 700 /var/cache/auto-apply
 exit 0
 # done
+#DEBHELPER#
