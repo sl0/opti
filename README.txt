@@ -8,7 +8,7 @@ Author:     Johannes Hubertz <johannes@hubertz.de>
 
 Date:       2013-07-17
 
-Version:    0.9.4
+Version:    0.9.5
 
 License:    GNU General Public License version 3 or later
 
@@ -33,6 +33,17 @@ rules are sorted. So it should be a challenge for the
 administrator to create his rules using as few policy-
 changes as possible within his ruleset to have a maximum
 benefit of the otimizer-script.
+
+Changes to 0.9.5:
+Version numbers corrected in setup.py, README.txt, and in 
+the scripts. postinst now contains #DEBHELPER# tag for 
+silence with gpb buildpackage --git-pbuilder
+
+Changes to 0.9.4:
+/root/autp-apply moved to /var/cache/auto-apply/auto-apply
+postinst creates /var/cache/auto-apply/
+i-o.py moved to /usr/share/pyshared/iptables_optimizer.py
+man-page adapted and more verbose now.
 
 Changes to 0.9.3:
 /root/auto-apply moved to new location:
