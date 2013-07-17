@@ -20,6 +20,4 @@ Description: sort iptables due to packet-counters
  .
  License: GPLv3, or any newer version, see LICENSE.txt
  Author:  Johannes Hubertz   <johannes@hubertz.de>
- Version: 0.9.3
- Date:    2013-07-16
  Have fun!
