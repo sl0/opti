@@ -1,3 +1,11 @@
+iptables-optimizer (0.9.5) unstable; urgency=low
+
+  * [1cfc7f0] #DEBHELPER# appended to postinst
+  * [f444797] control and copyright: naming corrected, version removed
+  * [fb50dfe] version changed to 0.9.5
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Thu, 18 Jul 2013 00:12:34 +0200
+
 iptables-optimizer (0.9.4) unstable; urgency=low
 
   * [e7b7496] auto-apply moved to /var/cache, postinst needed
