@@ -4,8 +4,8 @@
 #
 # License:  GNU General Public License version 3 or newer
 # Author:   Johannes Hubertz <johannes@hubertz.de>
-# Version:  0.9.5
-# Date:     2013-07-17
+# Version:  0.9.6
+# Date:     2013-07-18
 #
 # Fullname: /usr/sbin/iptables-optimizer
 # Options:  -v
@@ -24,7 +24,7 @@ DATE=`/bin/date "+%Y%m%d-%H%M%S"`
 # if present and executable, iptables-restore is called to load it.
 #
 # new ruleset is found by name:
-AUTO__DIR=/var/cache/auto-apply
+AUTO__DIR=/var/cache/iptables-optimizer
 AUTO_FILE=auto-apply
 AUTO=${AUTO__DIR}/${AUTO_FILE}
 
