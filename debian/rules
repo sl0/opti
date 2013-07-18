@@ -14,7 +14,7 @@ clean:
 
 install:	build
 	dh_prep
-	dh_installdirs /usr/sbin /usr/share/pyshared
+	dh_installdirs /usr/sbin /usr/share/pyshared /var/cache/iptables-optimizer
 
 	cd $(CURDIR)/debian/iptables-optimizer/usr/share/pyshared && \
 		cp $(CURDIR)/iptables_optimizer.py iptables_optimizer.py && \
