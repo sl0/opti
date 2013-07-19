@@ -1,3 +1,12 @@
+iptables-optimizer (0.9.6) unstable; urgency=low
+
+  * [6e2d63e] deleted, not neccessary, dh_installdirs does it
+  * [7721723] /var/cache/iptables-optimizer , thats it.
+  * [48aeb8d] auto-apply now in /var/cache/iptables-optimizer, v0.9.6
+  * [cb035f8] man page adapted to new path for auto-apply
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Fri, 19 Jul 2013 02:01:25 +0200
+
 iptables-optimizer (0.9.5) unstable; urgency=low
 
   * [1cfc7f0] #DEBHELPER# appended to postinst
