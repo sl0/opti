@@ -29,7 +29,7 @@ it runs in three steps, working directory is /var/run, id=0 is neccessary:
 Of course, you might want to run it by cron every now and then. 
 
 On startup iptables-optimizer first checks, if a file 
-.B /var/cache/auto-apply/auto-apply
+.B /var/cache/iptables-optimizer/auto-apply
 exists. If it does and it is not executable, iptables-optimizer
 logs and simply exits. If it is executable, then this is given 
 to iptables-restore, renamed and exit.  The renaming follows up 
