@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+
+# Remove cached config files on purge only
+
+case "$1" in
+    purge)
+	rm -rf /var/cache/iptables-optimizer
+    ;;
+
+    remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+        # Nothing to do here
+    ;;
+
+    *)
+        echo "$0 called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
