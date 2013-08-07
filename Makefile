@@ -2,10 +2,11 @@
 # so there is nothing real to do, but pleasure
 
 testing:
-	@more README.txt
+	@cat README.txt
 	@echo "Now starting tests ..."
 	/usr/local/bin/tox
 
 clean:
 	@python setup.py clean --bdist-base build
 	@rm -rf .coverage *.pyc reference-output rs ts build
+	@rm -rf __pycache__
