@@ -1,3 +1,16 @@
+iptables-optimizer (0.9.7) unstable; urgency=low
+
+  * [394a447] typo corrected in the man page
+  * [56c21ed] Build-Depends: python-support added
+  * [28e4b6f] dh_python2 replaced by dh_python-support, installs on squeeze ok
+  * [fd10add] prerm removes /var/cache/iptables-optimizer on purge
+  * [ddae3ba] cosmetics in Makefile and iptables_optimizer.py
+  * [fe79343] py.test introduced, nosetests are replaced
+  * [f64f350] clean removes pycache and egg.info
+  * [9dac4b5] version 0.9.7 released
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Thu, 08 Aug 2013 12:06:11 +0200
+
 iptables-optimizer (0.9.6) unstable; urgency=low
 
   * [6e2d63e] deleted, not neccessary, dh_installdirs does it
