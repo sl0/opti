@@ -35,7 +35,7 @@ changes as possible within his ruleset to have a maximum
 benefit of the otimizer-script.
 
 Changes to 0.9.7:
-Keeping pylint happy is an unrached goal. setuptools for
+Keeping pylint happy is an unreached goal. setuptools for
 setup, version step.
 
 Changes to 0.9.6:
