@@ -4,8 +4,8 @@
 #
 # License:  GNU General Public License version 3 or newer
 # Author:   Johannes Hubertz <johannes@hubertz.de>
-# Version:  0.9.6
-# Date:     2013-07-18
+# Version:  0.9.7
+# Date:     2013-08-08
 #
 # Fullname: /usr/sbin/iptables-optimizer
 # Options:  -v

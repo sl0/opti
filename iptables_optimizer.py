@@ -8,8 +8,8 @@
     in relation to usage (paket counters)
 
 Author:     Johannes Hubertz johannes@hubertz.de
-Date:       2013-07-17
-Version:    0.9.5 unchanged from 0.9.2
+Date:       2013-08-08
+Version:    0.9.7
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
@@ -28,7 +28,7 @@ Have Fun!
 
 import sys
 import os
-import string
+#import string
 
 
 def extract_pkt_cntr(cntrs):
@@ -36,8 +36,8 @@ def extract_pkt_cntr(cntrs):
     pkt_cntr and byt_cntr as set of return value for comparison"""
     br1 = cntrs.replace("[", "")
     br2 = br1.replace("]", "").strip()
-    pkts, bytes = br2.split(':')
-    return (pkts, bytes)
+    pkts, byts = br2.split(':')
+    return (pkts, byts)
 
 
 class Chain():
@@ -104,8 +104,8 @@ class Chain():
             self.partitions = [[1, 1]]
         else:
             self.partitions.append([p_strt, p_ende])
-        retVal = len(self.partitions)
-        return retVal
+        retval = len(self.partitions)
+        return retval
 
     def find_ins_point(self, act, part_start):
         """find out, where to insert rule due to pkt-cntrs"""
@@ -135,12 +135,8 @@ class Chain():
         len_val = len(self.liste)
         if len_val < 1:
             return (len_val, ret_val)
-        part_no = 0
         self.make_partitions()
-        #print "P:", self.name, self.partitions
         for part in self.partitions:
-            #print "P:", self.name, part[0], "-", part[1]
-            part_no += 1
             start = part[0] - 1
             last = part[1]
             par_val = 0
@@ -176,26 +172,25 @@ class Filter():
                     for act in range(0, len(items)):
                         if items[act] == '-A':
                             c_name = items[act + 1]
-                            c_rest = items[act + 2:]
+                            #c_rest = items[act + 2:]
                             self.chains[c_name].append(items)
-                            #print "xxxA: ", line,
         except IOError, err:
-            print filename + ": ", err.strerror
+            print(filename + ": ", err.strerror)
 
     def opti(self):
         """optimize all chains, one pass, and ready
         return sum of moved counts and partitions list for debugging
         """
         ret_val = 0
-        msg = "#chainname  : moves  partitions\n"
+        omsg = "#chainname  : moves  partitions\n"
         for name in self.chains.keys():
             (length, moved) = self.chains[name].opti()
             ret_val += moved
             parts = ""
             for part in self.chains[name].partitions:
                 parts += str(part)
-            msg += "#%-11s: %5d  %s\n" % (name, moved, parts)
-        return (ret_val, msg)
+            omsg += "#%-11s: %5d  %s\n" % (name, moved, parts)
+        return (ret_val, omsg)
 
     def sequence(self):
         """keep track of all chainnames, predefined first with policy"""
@@ -235,12 +230,11 @@ class Filter():
 
 
 if __name__ == "__main__":
-    unbufd = os.fdopen(sys.stdout.fileno(), 'w', 0)
-    sys.stdout = unbufd
     try:
         f = Filter()
         result, msg = f.opti()
         sys.stderr.write(msg)  # print partition-table to stderr
-        print f.show(),
+        outmsg = f.show()
+        print(outmsg),
     except KeyboardInterrupt, err:
-        print "\rUser stopped, execution terminated"
+        print("\rUser stopped, execution terminated")

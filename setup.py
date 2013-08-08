@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(name='iptables-optimizer',
     description='runtime iptables sorting by packet-counters',
     long_description=open('README.txt').read(),
-    version='0.9.5',
+    version='0.9.7',
     license='GNU General Public License version 3 (or later)',
     platforms='GNU/Linux 2.6.x, GNU/Linux 3.x',
     author='Johannes Hubertz',
