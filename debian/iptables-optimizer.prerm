@@ -1,12 +1,13 @@
 #!/bin/sh -e
 
+#DEBHELPER#
 
 # Remove cached config files on purge only
 
 case "$1" in
     purge)
-	rm -rf /var/cache/iptables-optimizer
-	rm -f  /var/run/iptables-optimizer-* /var/run/ref-with-*
+	rm -rf /var/cache/iptables-optimizer ;
+	rm -f  /var/run/iptables-optimizer-* /var/run/ref-with-* ;
     ;;
 
     remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
