@@ -8,8 +8,8 @@
     in relation to usage (paket counters)
 
 Author:     Johannes Hubertz johannes@hubertz.de
-Date:       2013-08-08
-Version:    0.9.7
+Date:       2013-08-12
+Version:    0.9.8
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
@@ -28,7 +28,6 @@ Have Fun!
 
 import sys
 import os
-#import string
 
 
 def extract_pkt_cntr(cntrs):
@@ -174,7 +173,7 @@ class Filter():
                             c_name = items[act + 1]
                             #c_rest = items[act + 2:]
                             self.chains[c_name].append(items)
-        except IOError, err:
+        except IOError as err:
             print(filename + ": ", err.strerror)
 
     def opti(self):
@@ -236,5 +235,5 @@ if __name__ == "__main__":
         sys.stderr.write(msg)  # print partition-table to stderr
         outmsg = f.show()
         print(outmsg),
-    except KeyboardInterrupt, err:
+    except KeyboardInterrupt as err:
         print("\rUser stopped, execution terminated")
