@@ -1,3 +1,17 @@
+iptables-optimizer (0.9.8) unstable; urgency=low
+
+  [ Johannes Hubertz ]
+  * [1144d70] clean removes directoy dist, created for rpm
+  * [94c6e10] debhelper prerm corrected
+
+  [ Tim Stolarski ]
+  * [579251f] Move purge operation to postrm script
+
+  [ Johannes Hubertz ]
+  * [218f04d] python3.2 compatibility took some time
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Mon, 12 Aug 2013 21:41:03 +0200
+
 iptables-optimizer (0.9.7) unstable; urgency=low
 
   * [394a447] typo corrected in the man page

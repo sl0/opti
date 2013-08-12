@@ -6,9 +6,9 @@ Optimize kernels ruleset by sorting in relation to usage.
 
 Author:     Johannes Hubertz <johannes@hubertz.de>
 
-Date:       2013-08-08
+Date:       2013-08-12
 
-Version:    0.9.7
+Version:    0.9.8
 
 License:    GNU General Public License version 3 or later
 
@@ -33,6 +33,10 @@ rules are sorted. So it should be a challenge for the
 administrator to create his rules using as few policy-
 changes as possible within his ruleset to have a maximum
 benefit of the otimizer-script.
+
+Changes to 0.9.8:
+iptables_optimizer.py is now python3.2 ready and
+tested by tox with nosetests3
 
 Changes to 0.9.7:
 Keeping pylint happy is an unreached goal. setuptools for

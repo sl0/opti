@@ -6,7 +6,14 @@ testing:
 	@echo "Now starting tests ..."
 	/usr/local/bin/tox
 
+rpm:
+	python setup.py bdist_rpm
+
+deb:
+	gbp buildpackage --git-pbuilder
+
 clean:
 	@python setup.py clean --bdist-base build
 	@rm -rf .coverage *.pyc reference-output rs ts build
 	@rm -rf __pycache__ iptables_optimizer.egg-info/ dist
+	@rm -rf *.py3
