@@ -1,11 +1,17 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
+import sys
 from setuptools import setup, find_packages
+
+kw = {}
+if sys.version_info >= (3,):
+        kw['use_2to3'] = True
+
 
 setup(name='iptables-optimizer',
     description='runtime iptables sorting by packet-counters',
     long_description=open('README.txt').read(),
-    version='0.9.8',
+    version='0.9.9',
     license='GNU General Public License version 3 (or later)',
     platforms='GNU/Linux 2.6.x, GNU/Linux 3.x',
     author='Johannes Hubertz',
