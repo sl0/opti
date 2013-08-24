@@ -2,12 +2,12 @@ Source: iptables-optimizer
 Maintainer: Johannes Hubertz <johannes@hubertz.de>
 Section: utils
 Priority: optional
-Build-Depends: python-all (>= 2.6.5-3), debhelper (>= 9), python-support
+Build-Depends: python (>= 2.6.5-3), debhelper (>= 9), python-support
 Standards-Version: 3.9.3
 
 Package: iptables-optimizer
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}
+Depends: python (>= 2.6.5), ${misc:Depends}
 Description: sort iptables due to packet-counters
  as read their values from file. stdout comes 
  with [0:0] for iptables-restore -c
@@ -20,4 +20,3 @@ Description: sort iptables due to packet-counters
  .
  License: GPLv3, or any newer version, see LICENSE.txt
  Author:  Johannes Hubertz   <johannes@hubertz.de>
- Have fun!
