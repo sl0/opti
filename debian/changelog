@@ -1,3 +1,14 @@
+iptables-optimizer (0.9.9) unstable; urgency=low
+
+  * [436f2f8] python3 dependancies removed, python2 is actual standard version
+  * [003cfcb] no python module to build, so dh_pysupport removed
+  * [7885b7d] setup.py may use 2to3 if used with python3
+  * [4380120] version incremented t0 0.9.9
+  * [cad1b02] version 0.9.9, shebang uses python directly
+  * [1484100] README.txt mentions changes to 0.9.9
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Sat, 24 Aug 2013 23:01:24 +0200
+
 iptables-optimizer (0.9.8) unstable; urgency=low
 
   [ Johannes Hubertz ]
