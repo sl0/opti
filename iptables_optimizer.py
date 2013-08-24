@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- mode: python -*-
 # -*- coding: utf-8 -*-
 #
@@ -8,8 +8,8 @@
     in relation to usage (paket counters)
 
 Author:     Johannes Hubertz johannes@hubertz.de
-Date:       2013-08-12
-Version:    0.9.8
+Date:       2013-08-24
+Version:    0.9.9
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
