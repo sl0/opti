@@ -38,7 +38,6 @@ binary-indep: build install
 	dh_installman --language=C man/*
 	dh_compress
 	dh_fixperms
-	dh_pysupport
 	dh_installdeb
 	dh_gencontrol
 	dh_md5sums
