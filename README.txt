@@ -6,9 +6,9 @@ Optimize kernels ruleset by sorting in relation to usage.
 
 Author:     Johannes Hubertz <johannes@hubertz.de>
 
-Date:       2013-08-12
+Date:       2013-08-24
 
-Version:    0.9.8
+Version:    0.9.9
 
 License:    GNU General Public License version 3 or later
 
@@ -34,6 +34,12 @@ administrator to create his rules using as few policy-
 changes as possible within his ruleset to have a maximum
 benefit of the otimizer-script.
 
+Changes to 0.9.9:
+debian package now ships a single python file, no more
+any python3 dependancies as python2 is standard in debian
+debhelpers for building python-modules removed, default
+python from distribution is used in shebang directly
+
 Changes to 0.9.8:
 iptables_optimizer.py is now python3.2 ready and
 tested by tox with nosetests3
@@ -47,8 +53,8 @@ no need of postinst, auto-apply is fetched from
 /var/cache/iptables-optimizer now
 
 Changes to 0.9.5:
-Version numbers corrected in setup.py, README.txt, and in 
-the scripts. postinst now contains #DEBHELPER# tag for 
+Version numbers corrected in setup.py, README.txt, and in
+the scripts. postinst now contains #DEBHELPER# tag for
 silence with gpb buildpackage --git-pbuilder
 
 Changes to 0.9.4:
@@ -76,11 +82,11 @@ iptables-optimizer.8
 
 Changes to 0.9.1:
 Now the wrapper is included, see optimize.sh. It can do
-auto-apply now. Manuals have been written for both 
-optimize.sh and iptables-ptimizer, which is an executable 
-copy of iptables_optimizer.py in /sbin. Nosetests are 
-replaced by tox, so we're sure about the python part is 
-working with python2.6, python2.7 and python3.2 as well 
+auto-apply now. Manuals have been written for both
+optimize.sh and iptables-ptimizer, which is an executable
+copy of iptables_optimizer.py in /sbin. Nosetests are
+replaced by tox, so we're sure about the python part is
+working with python2.6, python2.7 and python3.2 as well
 as compliance to pep8.
 
 Changes to 0.9:
