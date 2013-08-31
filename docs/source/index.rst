@@ -7,11 +7,9 @@ Welcome to iptables-optimizer's documentation!
 ==============================================
 
 .. image:: latency.png
-   :width: 450px
+   :width: 550px
    :align: right
    :alt: latency
-
-
 
 
 what's up here?
@@ -21,23 +19,18 @@ what's up here?
 sorts your iptables-chains in relation to packet counters. The intention is
 to run it by cron as often as needed.
 
-
-
-
-.. toctree::
-   :maxdepth: 1
-
-   iptables-optimizer
-   sources
-
-unittests
-sources
-
+**iptables-optimizer** is licensed under GNU GPLv3 or any later version
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
+
+   iptables-optimizer
+   plausible
+   unittests
+   sources
+
 
 
 

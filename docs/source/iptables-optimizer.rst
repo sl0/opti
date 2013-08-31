@@ -28,22 +28,50 @@ Another idea came up: partitioning of the long chains into parts of same
 targets. Within a partition the rules might be sorted on behalf of the 
 packet counters so that the most often rules are searched first. And all 
 the unused rules wouldn't be consulted so much often. Sounds crazy, but 
-seemed to be plausible. Tests were done, python was chosen for the 
+seemed to be `plausible <plausible.html>`_. Tests were done, python was chosen for the 
 programming part of the job. And a long and stony way started with the 
 first step.
 
 shell wrapper
 -------------
 
-The shell wrapper simply acts in four steps: 
+The shell wrapper simply acts in few steps: 
 
-  1. If the administrator has spend a new rule set, restore it into the kernel, rename, exit
-  2. It calls **iptables-save -t filter -c** to store the kernels tables in a file 
-  3. The python code works on this file and stdout is saved to another file
-  4. This restored into the kernel from **iptables-restore**
+  1. If ``ref-with-error-in`` exists, exit immediately due to error of previous run
+  2. If the administrator has spend a new rule set in ``auto-apply``, restore it into the kernel, rename, exit
+  3. Use **iptables-save -t filter -c** to store the kernels tables to a file ``reference-input``
+  4. Run iptables_optimizer.py, save stdout to ``reference-output``, stderr to ``iptables-optimizer-partitions``
+  5. Use **iptables-restore** to push the modified content in ``reference-output`` back to the kernel
+  6. If called with an argument, use **logger** to put ``iptables-optimizer-partitions`` into syslog
 
 Some error-checking is done, so it is a little bit longer 
-than four lines of code. The real tricky things are done at step 3, following.
+than four lines of code. The real tricky things are done at step 3, following. In case of an error,
+reference-input is renamed to ``ref-with-error-in``, which existance is checked on startup and exit. 
+So further runs are not doing any harm after a first error.
+
+Some Debian conventions about the path for the files are respected:
+
++---------------------------------------------------------+
+|  ``Path``                                               |
++=========================================================+
+|  ``/usr/sbin/iptables-optimizer``                       |
++---------------------------------------------------------+
+|  ``/usr/share/man/man8/iptables-optimizer.8.gz``        |
++---------------------------------------------------------+
+|  ``/usr/share/pyshared/iptables_optimizer.py``          |
++---------------------------------------------------------+
+|  ``/var/cache/iptables-optimizer/auto-apply``           |
++---------------------------------------------------------+
+|  ``/var/cache/iptables-optimizer/auto-apply-YYYYMMDD``  |
++---------------------------------------------------------+
+|  ``/var/run/{reference-input,ref-with-error-in}``       |
++---------------------------------------------------------+
+|  ``/var/run/{reference-output,ref-with-error-out}``     |
++---------------------------------------------------------+
+|  ``/var/run/iptables-optimizer-partitions``             |
++---------------------------------------------------------+
+|  ``/var/run/iptables-optimizer-last-run``               |
++---------------------------------------------------------+
 
 
 python code
@@ -85,3 +113,6 @@ Two python classes were build: Chain and Filter. An instance of the
 Filter class holds at least the predefined chains, perhaps some
 user defined chains. On creation it reads the given file.
 
+More in `unittests <unittests.html>`_ are fine
+
+#`configuration <config.html>`_
