@@ -5,7 +5,7 @@
 """
     iptables-optimizer.py:
     optimize iptables ruleset in userland
-    in relation to usage (paket counters)
+    in relation to usage (packet counters)
 
 Author:     Johannes Hubertz johannes@hubertz.de
 Date:       2013-08-24
@@ -13,7 +13,7 @@ Version:    0.9.9
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
-in iptables paketfilter chains, optimization target is throughput.
+in iptables packetfilter chains, optimization target is throughput.
 
 All chains are partitioned now, sorting is done inside the
 partitions. Sequence of partitions is never changed, these keep
@@ -123,13 +123,13 @@ class Chain():
         list_point = int(self.find_ins_point(position, part_start))
         tmp_rule = self.liste.pop(position)
         self.liste.insert(list_point, tmp_rule)
-        paket_cnt = self.cntrs.pop(position)
-        self.cntrs.insert(list_point, paket_cnt)
+        packet_cnt = self.cntrs.pop(position)
+        self.cntrs.insert(list_point, packet_cnt)
         bytes_cnt = self.bytes.pop(position)
         self.bytes.insert(list_point, bytes_cnt)
 
     def opti(self):
-        """optimze this chain due to paket counters"""
+        """optimze this chain due to packet counters"""
         ret_val = 0
         len_val = len(self.liste)
         if len_val < 1:
