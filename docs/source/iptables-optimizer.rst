@@ -1,5 +1,5 @@
-iptables-optimizer intro
-========================
+iptables-optimizer - intro
+==========================
 
 In many SMB environments long term running packet filters are quite normal. 
 Usually the administrators are often asked to add a rule for a special purpose, 
@@ -32,6 +32,19 @@ seemed to be plausible. Tests were done, python was chosen for the
 programming part of the job. And a long and stony way started with the 
 first step.
 
+shell wrapper
+-------------
+
+The shell wrapper simply acts in four steps: 
+
+  1. If the administrator has spend a new rule set, restore it into the kernel, rename, exit
+  2. It calls **iptables-save -t filter -c** to store the kernels tables in a file 
+  3. The python code works on this file and stdout is saved to another file
+  4. This restored into the kernel from **iptables-restore**
+
+Some error-checking is done, so it is a little bit longer 
+than four lines of code. The real tricky things are done at step 3, following.
+
 
 python code
 -----------
@@ -49,7 +62,26 @@ external commands, but running well in all different python versions.
 The external parts were migrated to an external shell script, which 
 itself calls the python snippet for the complex actions now.
 
+So, what needs to be done? The filter tables are search for every
+traversing packet, all the rules are checked for matching, and if 
+one matches, its target is applied to the packet and usually the
+action for this packet is finished. The less rules must be searched
+the quicker the packet is forwarded or dropped. So the rules should
+be assorted in a way, more often used ones should be found quicker
+than those which are seldom used. But, there is a handicap: Perhaps
+the administrator wants some special packets to be dropped and some
+other to be forwarded. The old-fashioned handmade rule set respects
+this, and the administrators artwork shall never be destroyed by
+sorting. Let's think again, is it possible to sort the rules and to
+respect his artwork? Yes, it is possible, but few restrictions apply.
 
-shell wrapper
--------------
+In every chain we have some rules to accept, some to drop and some 
+others, each intermixed with the others. Partitions are the key to
+those which may be sorted without affecting the overall policy. If 
+we group some consecutive rules having the same targets, we can
+exchange them without changing the policy. Sure.
+
+Two python classes were build: Chain and Filter. An instance of the
+Filter class holds at least the predefined chains, perhaps some
+user defined chains. On creation it reads the given file.
 

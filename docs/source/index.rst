@@ -6,6 +6,13 @@
 Welcome to iptables-optimizer's documentation!
 ==============================================
 
+.. image:: latency.png
+   :width: 450px
+   :align: right
+   :alt: latency
+
+
+
 
 what's up here?
 ===============
@@ -21,8 +28,10 @@ to run it by cron as often as needed.
    :maxdepth: 1
 
    iptables-optimizer
-   unittests
    sources
+
+unittests
+sources
 
 
 Contents:
