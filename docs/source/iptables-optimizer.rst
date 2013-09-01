@@ -1,3 +1,4 @@
+==========================
 iptables-optimizer - intro
 ==========================
 
@@ -33,7 +34,10 @@ programming part of the job. And a long and stony way started with the
 first step.
 
 shell wrapper
--------------
+=============
+
+What does it do?
+----------------
 
 The shell wrapper simply acts in few steps: 
 
@@ -46,8 +50,11 @@ The shell wrapper simply acts in few steps:
 
 Some error-checking is done, so it is a little bit longer 
 than four lines of code. The real tricky things are done at step 3, following. In case of an error,
-reference-input is renamed to ``ref-with-error-in``, which existance is checked on startup and exit. 
+reference-input is renamed to ``ref-with-error-in``, which existence is checked on startup and exit. 
 So further runs are not doing any harm after a first error.
+
+Where is it located?
+--------------------
 
 Some Debian conventions about the path for the files are respected:
 
@@ -75,7 +82,7 @@ Some Debian conventions about the path for the files are respected:
 
 
 python code
------------
+===========
 
 Python comes with batteries included, they say. The subprocess module
 can execute every shell command from within the python code. Sounds well,
@@ -109,10 +116,36 @@ those which may be sorted without affecting the overall policy. If
 we group some consecutive rules having the same targets, we can
 exchange them without changing the policy. Sure.
 
+
 Two python classes were build: Chain and Filter. An instance of the
 Filter class holds at least the predefined chains, perhaps some
 user defined chains. On creation it reads the given file.
 
-More in `unittests <unittests.html>`_ are fine
+class Filter
+------------
 
-#`configuration <config.html>`_
+An instance of the Filter class reads a file, this is the result of
+all the struggles with subprocess. The file is in well known iptables-save 
+format, so we get the chain names at first and the their content. For 
+each an instance of the class Chain is set up. The packet counters
+are needed, this is done by the "-c" in the 3rd step of the wrapper. 
+The init method ends up with a full representation of the kernels 
+filter tables in memory.
+
+The opti method uses the opti method of all chain instances, the show
+method is just a wrapper around the many print statements for testing
+purposes and for better separating any additional information such 
+as statistics, which must be printed to stderr. Just before the ending 
+up the show method is used to prepare the print to stdout.
+
+
+class Chain
+-----------
+
+On reading the file, an instance of the Chain class is build on the fly.
+The appends are done using the corresponding append method, and so
+at last a complete picture of the kernels view is in memory. The opti
+method on startup uses the make_partitions method prior to the sorting 
+related to the packet counters.
+
+

@@ -17,7 +17,7 @@ what's up here?
 
 **iptables-optimizer** is a python script called from a shell wrapper, which
 sorts your iptables-chains in relation to packet counters. The intention is
-to run it by cron as often as needed.
+to run it by cron as often as needed. Sounds crazy? Continue reading, please.
 
 **iptables-optimizer** is licensed under GNU GPLv3 or any later version
 
