@@ -1,64 +1,100 @@
 
-.TH iptables-optimizer 8 "July 2013" "Johannes Hubertz" " "
+.TH iptables-optimizer 8 "August 2014" "Johannes Hubertz" " "
 
 .SH NAME
 iptables-optimizer \- optimize iptables filter-chains in kernel depending on their usage counters
 
 .SH SYNOPSIS
-.B iptables-optimizer [-v]
+.B iptables-optimizer [-a] [-c] [-v[v]]
 .br
 
 .SH DESCRIPTION
 .B iptables-optimizer
-is used to sort iptables-rules in relation to the values of their 
-packet-counters. And of course, administrators artwork is untouched. 
-Sorting only happens in consecutive blocks of accept or drop statements, 
-never across their borders. Within these blocks are called partitions 
-and so they behave. 
+is used to sort iptables-rules in relation to the values of their
+packet-counters. And of course, administrators artwork is untouched.
+Sorting only happens in consecutive blocks of accept or drop
+statements, never across their borders. Therefore these blocks are
+called partitions and so they behave.
 
-iptables-optimizer is shipped in two files, a shell wrapper an a python exec.
-The wrapper is my tribute to different functions of python subprocess,
-it runs in three steps, working directory is /var/run, id=0 is neccessary:
+iptables-optimizer is shipped in three files, a shell wrapper,
+functions to be sourced from it and a python exec. The sourced
+functions were neccessary because of testing them with
+.B shunit2,
+thanks to Karen Ward for this wonderful tool. The wrapper is my tribute
+to the changing function of python subprocess in different default
+python versions over some Debian releases.
 
-.B iptables-save -t filter -c > reference-input
+It runs in four steps, working directory is /var/run, id=0 is
+neccessary:
 
-.B iptables_optimizer.py > reference-output
+.B 1.) /var/cache/iptables-optimizer/auto-apply
+is checked for read and exec flags. If they are, the file this is given
+as input to iptables-restore, afterwards it is renamed. The renaming
+follows up a simple datetime strategy, this action is logged as well.
+Thats my way of firing new rules into the machine.
 
-.B iptables-restore < reference-output
+.B 2.) iptables-save -t filter -c > reference-input
 
-Of course, you might want to run it by cron every now and then. 
+.B 3.) iptables_optimizer.py > reference-output
 
-On startup iptables-optimizer first checks, if a file 
-.B /var/cache/iptables-optimizer/auto-apply
-exists. If it does and it is not executable, iptables-optimizer
-logs and simply exits. If it is executable, then this is given 
-to iptables-restore, renamed and exit.  The renaming follows up 
-a simple datetime strategy, this action is logged as well. Thats
-my way of firing new rules into the machine.
+.B 4.) iptables-restore < reference-output
 
-.SH "LOG"
-Steps and count of iptables are reported via syslog.
+Of course, you might want to run it by cron every now and then.
 
 .SH "OPTIONS"
-.IP -v 
-additionally shows chains, partitions and moves in log via syslog. 
-No check of option content is done for simplicity.
+.IP -a
+If given, it prevents the iptables-optimizer from handling the file
+.B /var/cache/iptables-optimizer/auto-apply
+
+.IP -c
+This option will prevent iptables-optimizer to reset paket/byte
+counters on restoring the tables, i.e these counters will be reloaded
+with the sorted rules. Intention is to support long term debugging
+sessions, because the position of the rules to be obeyed will be more
+stable.
+
+.IP -v
+Verbose logging, may be given twice.
+
+.SH "FILES"
+.B /var/cache/iptables-optimizer
+keeps all the new rulesets, incomig new
+.B auto-apply
+is renamed to f.e. 
+.B auto-apply-20140818-091958
+and kept there. Feel free to clean up these files or keep them as you like it.
+
+.B /var/run
+keeps the temporary files, their names all are beginning with
+.B iptables-optimizer-
+
+.SH "LOG"
+The handling of an executable file
+.B auto-apply
+is reported always. At least start and end of every program run
+is reported via syslog. Single verbose flag shows the three steps
+and the corresponding number of iptables commands. Two verbose flags
+additionally will show up the count of moves and the partitions of
+the chains.
 
 .SH "EXIT STATUS"
-iptables-optimizer usually returns a value of 0. Accidentially in case of error, 
-f.e. if the iptables-restore fails, it returns a value of 1. 
-Other values are not foreseen.
+iptables-optimizer usually returns a value of 0. Accidentially in
+case of error, f.e. if the iptables-restore fails, it returns the
+triggering error.
 
 .SH "COMPATIBILITY"
 iptables-optimizer
 .B should
-be compatible to any iptables implementations out in the wild. If not, keep me informed, thanks. I'll do my very best.
+be compatible to any iptables implementations out in the wild. If not,
+keep me informed, thanks. I'll do my very best.
 
 .SH "HISTORY"
-iptables-optimizer has grown from first ideas over some month and many 
-errors to a productive state. First tries to use subproces within the 
-python soon led into problems using different python versions on different
-debian releases. So these tasks were done on shell level.
+iptables-optimizer has grown from first ideas over some more than two
+years and many errors to a productive state. First tries to use
+subproces within the python soon led into problems using different
+python versions on different debian releases. So these tasks were done
+on shell level, python testing and shell testing improved the
+solution.
 
 .SH "SEE ALSO"
 .BR iptables (8)
@@ -70,6 +106,6 @@ GNU General Public License version 3 or any newer version applies to
 iptables-optimizer.
 
 .SH "AUTHOR"
-Johannes Hubertz <johannes@hubertz.de> wrote this in 2013.
-Any comments welcome anytime.
+Johannes Hubertz <johannes@hubertz.de> wrote this in 2012 - 2014.
+Anytime comments are welcome.
 
