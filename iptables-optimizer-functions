@@ -1,0 +1,130 @@
+# for missing shebang see: http://www.tldp.org/HOWTO/Bash-Prompt-HOWTO/x237.html
+#
+# License:  GNU General Public License version 3 or newer
+# Author:   Johannes Hubertz <johannes@hubertz.de>
+# Version:  0.9.10
+# Date:     2014-08-18
+#
+# these functions are sourced in iptables-optimizer and it's tests
+
+log_start()
+{
+    # at least one line always to syslog
+    [ ${VERBLOG} -eq 0 ] && echo "starts" | ${LOG}
+    return 0
+}
+
+log_partitions()
+{
+    # python puts this to stderr, show if wanted
+    local _file=$1
+    cat ${_file} | ${LOG}
+    return 0
+}
+
+count_tables()
+{
+    # just count the number of lines to log with a 
+    # given comment plus mentioning about errors
+    local _file=$1
+    local _errv=$2
+    local _cmts=$3
+
+    local _cnt=$( cat ${_file} | wc -l )
+    local _fff='no'
+    [ ${_errv} -ne 0 ] && _fff='with'
+    echo "${_cmts} ${_cnt} rules, ${_fff} errors" | ${LOG}
+}
+
+check_auto_apply_ready()
+{
+    # if file is readable and executable, say: Yes, do it.
+    local _pathname=$1
+
+    [ -r ${_pathname} -a -x ${_pathname} ] && return $TRUE
+
+    return $FALSE
+}
+
+auto_apply_execute()
+{
+    # do it, restore a new ruleset into the kernel
+    local _pathname=$1
+    local _DIRN=$(dirname ${_pathname})
+    local _FILE=$(basename ${_pathname})
+    local _DATE=$(/bin/date "+%Y%m%d-%H%M%S")
+    local _NAME=${_DIRN}/${_FILE}-${_DATE}
+    local _STDO=${_DIRN}/${_FILE}-stdout
+    local _STDE=${_DIRN}/${_FILE}-stderr
+
+    /sbin/iptables-restore -c < ${_pathname} >${_STDO} 2>${_STDE}
+    retval=$?
+
+    count_tables ${_pathname} ${retval} 'auto-apply:' 
+
+    [ ${retval} -ne 0 ] && return $FALSE
+
+    /bin/mv ${_pathname} ${_NAME}
+    retval=$?
+    [ ${retval} -ne 0 ] && return $FALSE
+
+    return $TRUE
+}
+
+save_the_tables()
+{
+    # copy the kernels iptables to a file
+    local _tables=$1
+    local _errors=$2
+
+    /sbin/iptables-save -t filter -c  >${_tables} 2>${_errors}
+    retval=$?
+
+    [ ${VERBLOG} -gt 0 ] && count_tables ${_tables} ${retval} 'Step 1:'
+
+    [ ${retval} -eq 0 ] && return $TRUE
+
+    return $FALSE
+}
+
+load_the_tables()
+{
+    # copy from a file into the kernels iptables
+    local _tables=$1
+    local _stdout=$2
+    local _stderr=$3
+    local _resetv=$4
+
+    RESET_VAL='-c'
+    [ ${_resetv} -eq 0 ] && RESET_VAL=''
+
+    /sbin/iptables-restore $RESET_VAL < ${_tables} >${_stdout} 2>${_stderr}
+    retval=$?
+
+    [ ${VERBLOG} -eq 0 ] && count_tables ${_tables} ${retval} 'ready' 
+    [ ${VERBLOG} -gt 0 ] && count_tables ${_tables} ${retval} 'Step 3:' 
+
+    [ ${retval} -eq 0 ] && return $TRUE
+
+    return $FALSE
+}
+
+run_python_part()
+{
+    # do the python part of the job
+    local _infile=$1
+    local _outfile=$2
+    local _partitions=$3
+
+    python iptables_optimizer.py ${_infile} >${_outfile} 2>${_partitions}
+    retval=$?
+
+    [ ${VERBLOG} -gt 0 ] && count_tables ${_outfile} ${retval} 'Step 2:'
+
+    [ ${VERBLOG} -gt 1 ] && log_partitions ${_partitions}
+
+    [ ${retval} -eq 0 ] && return $TRUE
+
+    return $FALSE
+}
+#EoF
