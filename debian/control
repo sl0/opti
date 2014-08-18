@@ -16,7 +16,7 @@ Description: sort iptables due to packet-counters
  .
  iptables-optimizer is a wrapper shellscript for checking, 
  logging and kernel-reads and -writes, and it calls 
- the pythonic iptables-optimizer.py
+ the pythonic iptables_optimizer.py
  .
  License: GPLv3, or any newer version, see LICENSE.txt
  Author:  Johannes Hubertz   <johannes@hubertz.de>
