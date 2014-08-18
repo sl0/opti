@@ -14,12 +14,14 @@ clean:
 
 install:	build
 	dh_prep
-	dh_installdirs /usr/sbin /usr/share/pyshared /var/cache/iptables-optimizer
-
+	dh_installdirs /usr/sbin /usr/share/iptables-optimizer /usr/share/pyshared /var/cache/iptables-optimizer
 	cd $(CURDIR)/debian/iptables-optimizer/usr/share/pyshared && \
-		cp $(CURDIR)/iptables_optimizer.py iptables_optimizer.py && \
+		cp $(CURDIR)/iptables_optimizer.py iptables_optimizer.py 
+	cd $(CURDIR)/debian/iptables-optimizer/usr/share/iptables-optimizer && \
+		sed -e 's!python iptables_optimizer.py!/usr/share/pyshared/iptables_optimizer.py!' < $(CURDIR)/iptables-optimizer-functions \
+		> iptables-optimizer-functions
 	cd $(CURDIR)/debian/iptables-optimizer/usr/sbin && \
-		cp $(CURDIR)/iptables-optimizer iptables-optimizer && \
+		sed -e 's!^source iptables-!source /usr/share/iptables-optimizer/iptables-!' < $(CURDIR)/iptables-optimizer > iptables-optimizer && \
 		chmod 755 iptables-optimizer
 	dh_lintian
 
