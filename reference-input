@@ -20,9 +20,6 @@
 [70:2323] -A INPUT -p tcp -m tcp --sport    0:65535 --dport 70 -j ACCEPT
 [1:2323] -A INPUT -p tcp -m tcp --sport 1024:65535 --dport 23 -j ACCEPT
 [280:2200] -A INPUT -i lo -j ACCEPT
-[380:3200] -A INPUT -j logdrop
-[381:3210] -A INPUT -j logdrob
-[382:3220] -A INPUT -j logdrp
 [3:30] -A INPUT -p tcp -m tcp --sport    0:65535 --dport 24 -j DROP
 [32:1260] -A INPUT -i eth3 -j ACCEPT
 [3:260] -A INPUT -i eth2 -j ACCEPT

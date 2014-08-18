@@ -1,106 +1,113 @@
-#!/bin/sh
-#
-# wrapper for python skript iptables_optimizer.py
+#!/bin/bash
 #
 # License:  GNU General Public License version 3 or newer
 # Author:   Johannes Hubertz <johannes@hubertz.de>
-# Version:  0.9.9
-# Date:     2013-08-24
+# Version:  0.9.10
+# Date:     2014-08-18
 #
 # Fullname: /usr/sbin/iptables-optimizer
-# Options:  -v
-# if givem, logging is more verbose about chains, partitions and moves
-
+#
+# optional command line switches:
+#    -a    suppress checking and applying of new rulesets
+#          think twice because of concurrent iptables-commands
+#          usually are not a very good idea!
+#
+#    -c    if present, no resetting the paket/byte counters
+#          for easier long term debugging
+#
+#    -v     turns on logging, twice is more verbose
+#
+##############################################################
+# iptables-optimizer runs in discrete steps:
+#
+# 0: if auto-apply is present, do it
+#    done with shell commands
+#
+# 1: get iptables out of the kernel into file
+#    done with shell commands
+#
+# 2: sort this file due to the counters into another file
+#    done with pythonic intelligence
+#
+# 3: feed the second files iptables into the kernel
+#    done with shell commands
+#
+# Almost every function was moved into another file, which is
+# sourced here. Simple reason for that is to enable the fine
+# tests with shunit2. All the tests for the shell and the
+# python part are included in the debian source package.
+#
+# Have fun!
+##############################################################
+#
+# functions, files and paths are defined here
+#
+# first, no surprises by any language wanted
 export LANG=C
-
+#
 # NAME is for logging, the shorter the better!
 NAME="opti"
-DATE=`/bin/date "+%Y%m%d-%H%M%S"`
-
-(
-# auto-apply is a fresh ruleset brought in by the admin.
-# if not present, no problem.
-# if present and not executable, writing is in progress, nothing done
-# if present and executable, iptables-restore is called to load it.
 #
-# new ruleset is found by name:
+# $AUTO points to new file containing new ruleset
 AUTO__DIR=/var/cache/iptables-optimizer
 AUTO_FILE=auto-apply
 AUTO=${AUTO__DIR}/${AUTO_FILE}
-
-# yes, we want logging
+#
+# all files are here
+WORKBENCH=/var/run
+#
+# and yes, we want logging, less or verbose
 LOG="/usr/bin/logger -t $NAME -p user.warn "
+#
+# command line argument -c manipulates the variable
+COUNTER=0
+# 0 => do reset packet/byte counters on the restore, default
+# 1 => do not reset packet/byte counters on restore
+#
+# command line argument -v manipulates the variable,
+#         may be used more than once
+VERBLOG=0
+# if 0, smallest logging, this is default
+# if 1, steps are logged
+# if 2, partition details are logged as well
+#
+TRUE=0
+FALSE=1
 
-# usual suspects: input and output
-TMI=/var/run/reference-input
-TMO=/var/run/reference-output
-
-# unsusual suspects: on error, these are kept
-# if present, nothings more done for investigations
-TIR=/var/run/ref-with-error-in
-TOR=/var/run/ref-with-error-out
-
-# stderr shall be written to, test if -v option given?
-STE=/var/run/iptables-optimizer-partitions
-[ $# -eq 0 ] && STE=/dev/null
-
-# any error on last run?
-[ -r $TIR ] && exit 0
-
-# look for new ruleset, coming via scp.
-[ -r $AUTO -a ! -x $AUTO ] && echo "auto-apply writing in progress" | $LOG
-[ -r $AUTO -a ! -x $AUTO ] && exit 0
-
-# look for new ruleset ready, after scp need chmod +x as ready and go indicator
-[ -x $AUTO ] && /sbin/iptables-restore $AUTO
-[ -x $AUTO ] && /sbin/iptables-save -t filter > /var/run/rules-saved-filter-only
-[ -x $AUTO ] && echo "renaming file to ${AUTO}-${DATE}" | $LOG  && /bin/true
-[ -x $AUTO ] && /bin/mv ${AUTO} ${AUTO}-${DATE} && exit 0
-
-# ok, no new ruleset, normal way of doing ...
-cd /var/run
-
-# Step 1: read kernel filter-chains and packet-counters 
-/sbin/iptables-save -c -t filter > $TMI
-ERR=$?
-LINES=`/bin/cat $TMI | /usr/bin/wc -l `
-[ $ERR -eq 0 ] && echo "Step 1: $LINES rules, no error" | $LOG 
-
-[ $ERR -gt 0 ] && echo "Step 1: $LINES rules, error: ${ERR}, abort" | $LOG 
-[ $ERR -gt 0 ] && exit 1
-
-# Step 2: pythonscript has no foreseen errorvalue for now.
-#         catch stdout: input for restore, stderr: partitions
-
-/usr/share/pyshared/iptables_optimizer.py  > $TMO 2>$STE
-
-LINEO=`/bin/cat $TMO | /usr/bin/wc -l `
-[ $LINEO -ne $LINES ] && /bin/mv $TMI $TIR
-[ $LINEO -ne $LINES ] && /bin/mv $TMO $TOR
-[ $LINEO -ne $LINES ] && echo "Step 2: ${LINES} -ne ${LINEO}, abort" | $LOG 
-[ $LINEO -ne $LINES ] && exit 1
-
-[ $LINEO -eq $LINES ] && echo "Step 2: ${LINES} rules OK" | $LOG 
-
-[ -f $STE ] && cat $STE | /usr/bin/logger -t $NAME
-
-# for longer lasting debugging sessions perhaps counters should not reset?
-#/sbin/iptables-restore  -c < $TMO
-# or normal way:
-/sbin/iptables-restore     < $TMO
-ERR=$?
-[ $ERR -eq 0 ] && echo "Step 3: $LINEO rules, no error" | $LOG 
-[ $ERR -eq 0 ] && exit 0
-# no error in step 3, all done!
-
-# if some error, no try to repair, some other job shall do, and
-# prevent from further running.
-[ $ERR -gt 0 ] && echo "Step 3: retry with error: ${ERR}, lock and abort" | $LOG 
-[ $ERR -gt 0 ] && /bin/mv $TMI $TIR
-[ $ERR -gt 0 ] && /bin/mv $TMO $TOR
-[ $ERR -gt 0 ] && /bin/mv /var/run/iptables-optimizer-last-run /var/run/ref-last-stdout_stderror
-[ $ERR -gt 0 ] && echo "Step 4: renaming done to prevent repetition of this failure" | $LOG 
-
-exit 1
-) 2>&1 | /usr/bin/tee /var/run/iptables-optimizer-last-run
+#
+source iptables-optimizer-functions
+#
+###############################################
+#
+# stop on first error, respect errors in pipes
+set -e
+set -o pipefail
+#
+# evaluate command line arguments
+#
+while getopts ":acv" opt; do
+  case $opt in
+    a) AUTO=${AUTO__DIR}/unwanted ;;
+    c) COUNTER=1;;
+    v) VERBLOG=$(( ${VERBLOG} + 1 ));;
+    #\?) echo "Invalid option: -$OPTARG" >&2 ;;
+  esac
+done
+###############################################
+#
+# start the job here
+log_start
+#
+# look if new rules are present and do neccessary actions
+check_auto_apply_ready "${AUTO}" && auto_apply_execute "${AUTO}"
+#
+cd $WORKBENCH
+#
+save_the_tables iptables-optimizer-save-output iptables-optimizer-save-errors
+#
+run_python_part iptables-optimizer-save-output iptables-optimizer-output iptables-optimizer-partitions
+#
+load_the_tables iptables-optimizer-output iptables-optimizer-restore-out iptables-optimizer-restore-err $COUNTER
+#
+exit 0
 # EoF
