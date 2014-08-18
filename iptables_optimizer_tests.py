@@ -231,13 +231,13 @@ class Filter_Test(unittest.TestCase):
         f = Filter("filter", "reference-input")
         cnt, msg = f.opti()
         expect = """#chainname  : moves  partitions
+#INPUT      :    18  [1, 2][3, 3][4, 11][12, 12][13, 16][17, 17][18, 19]
 #FORWARD    :     6  [1, 4][5, 5]
-#INPUT      :    18  [1, 2][3, 3][4, 11][12, 12][13, 16][17, 17][18, 18][19, 19][20, 20][21, 22]
-#IPSEC      :     0  [1, 1]
 #OUTPUT     :     6  [1, 4][5, 5][6, 6]
+#IPSEC      :     0  [1, 1]
 """
         self.assertEquals(30, cnt)
-        #print msg
+        print(msg)
         self.assertEquals(expect, msg)
 
     def test_04_filter_output(self):
@@ -264,9 +264,6 @@ class Filter_Test(unittest.TestCase):
 [70:2323] -A INPUT -p tcp -m tcp --sport    0:65535 --dport 70 -j ACCEPT
 [60:2323] -A INPUT -p tcp -m tcp --sport    0:65535 --dport 60 -j ACCEPT
 [1:2323] -A INPUT -p tcp -m tcp --sport 1024:65535 --dport 23 -j ACCEPT
-[380:3200] -A INPUT -j logdrop
-[381:3210] -A INPUT -j logdrob
-[382:3220] -A INPUT -j logdrp
 [3:30] -A INPUT -p tcp -m tcp --sport    0:65535 --dport 24 -j DROP
 [32:1260] -A INPUT -i eth3 -j ACCEPT
 [3:260] -A INPUT -i eth2 -j ACCEPT
