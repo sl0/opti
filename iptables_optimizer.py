@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- mode: python -*-
 # -*- coding: utf-8 -*-
 #
@@ -8,8 +8,8 @@
     in relation to usage (packet counters)
 
 Author:     Johannes Hubertz johannes@hubertz.de
-Date:       2013-08-24
-Version:    0.9.9
+Date:       2014-08-18
+Version:    0.9.10
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
@@ -19,7 +19,7 @@ All chains are partitioned now, sorting is done inside the
 partitions. Sequence of partitions is never changed, these keep
 untouched for not destroying admistrators artwork.
 
-You will need a wrapper script, use optimizer.sh as example.
+You will need a wrapper script, f.e. iptables-optimizer
 
 Comments, suggestions, improvements welcome!
 
@@ -112,8 +112,6 @@ class Chain():
         for run in range(part_start, act):
             if int(self.cntrs[run]) < val:
                 return run
-        #raise "unforeseen error condition"
-        #return 0
 
     def mov_up(self, position, part_start):
         """move position upwards where it belongs to
@@ -129,7 +127,7 @@ class Chain():
         self.bytes.insert(list_point, bytes_cnt)
 
     def opti(self):
-        """optimze this chain due to packet counters"""
+        """optimize this chain due to packet counters"""
         ret_val = 0
         len_val = len(self.liste)
         if len_val < 1:
@@ -150,7 +148,7 @@ class Chain():
 
 class Filter():
     """this is a filter group, may be filter, mangle, nat, raw,
-    optimzer looks on filter group only!
+    optimizer looks on filter group only!
     """
 
     def __init__(self, groupname="filter", filename="reference-input"):
@@ -171,7 +169,6 @@ class Filter():
                     for act in range(0, len(items)):
                         if items[act] == '-A':
                             c_name = items[act + 1]
-                            #c_rest = items[act + 2:]
                             self.chains[c_name].append(items)
         except IOError as err:
             print(filename + ": ", err.strerror)
@@ -229,8 +226,11 @@ class Filter():
 
 
 if __name__ == "__main__":
+    file_to_read = "reference-input"
+    if len(sys.argv) > 1:
+        file_to_read = sys.argv[1]
     try:
-        f = Filter()
+        f = Filter(filename=file_to_read)
         result, msg = f.opti()
         sys.stderr.write(msg)  # print partition-table to stderr
         outmsg = f.show()
