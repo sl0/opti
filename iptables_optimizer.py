@@ -28,6 +28,7 @@ Have Fun!
 
 import sys
 import os
+from collections import OrderedDict as OD
 
 
 def extract_pkt_cntr(cntrs):
@@ -153,7 +154,7 @@ class Filter():
 
     def __init__(self, groupname="filter", filename="reference-input"):
         """create a Filter object representing a filtergroup of iptables"""
-        self.chains = {}  # keep track of my chains
+        self.chains = OD()  # keep track of my chains
         self.groupname = groupname
         self.filename = filename
         try:
