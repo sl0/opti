@@ -17,11 +17,22 @@ casual_logger()
 
 LOG=casual_logger
 
+# are we root?
+ID=$(id -u)
+
+
 # first load the optimizer-functions
 . ./iptables-optimizer-functions
 
+test_Needs_to_run_as_root()
+{
+    ID=$(id -u)
+    ${_ASSERT_EQUALS_} 'expecting-to-run-as-root' 0 ${ID}
+}
+
 test_AutoApply_Not_Present()
 {
+	[ $ID -ne 0 ] && startSkipping
     # first check a non existing file for returning FALSE
     FILE="/tmp/opti-tests-auto-apply-not-present"
     check_auto_apply_ready $FILE
@@ -31,6 +42,7 @@ test_AutoApply_Not_Present()
 
 test_AutoApply_Not_Ready()
 {
+	[ $ID -ne 0 ] && startSkipping
     # create an existing file (0600) for returning FALSE
     FILE="/tmp/opti-tests-auto-apply-not-executable"
     touch ${FILE}
@@ -42,6 +54,7 @@ test_AutoApply_Not_Ready()
 
 test_AutoApply_Ready()
 {
+	[ $ID -ne 0 ] && startSkipping
     # create an existing file (0700) for returning TRUE
     FILE="/tmp/opti-tests-auto-apply"
     touch ${FILE}
@@ -53,6 +66,7 @@ test_AutoApply_Ready()
 
 test_AutoApply_Execute()
 {
+	[ $ID -ne 0 ] && startSkipping
     FILE="/tmp/opti-tests-auto-apply"
     auto_apply_execute $FILE
     retval=$?
@@ -62,14 +76,9 @@ test_AutoApply_Execute()
     ${_ASSERT_EQUALS_} 'auto-apply-removed' $PRESENT $FALSE
 }
 
-test_Needs_to_run_as_root()
-{
-    ID=$(id -u)
-    ${_ASSERT_EQUALS_} 'expecting-to-run-as-root' 0 ${ID}
-}
-
 test_Modprobe_NetFilter()
 {
+	[ $ID -ne 0 ] && startSkipping
     # try to load iptable modules
     /sbin/modprobe iptable_filter
     retval=$?
@@ -78,6 +87,7 @@ test_Modprobe_NetFilter()
 
 test_Good_iptables_save_without_log()
 {
+	[ $ID -ne 0 ] && startSkipping
     # try to save iptables from the kernel
     TABLES="/tmp/opti-tests-iptables-save-output"
     ERRORS="/tmp/opti-tests-iptables-save-errors"
@@ -89,6 +99,7 @@ test_Good_iptables_save_without_log()
 
 test_Good_iptables_save_with_simple_log()
 {
+	[ $ID -ne 0 ] && startSkipping
     # try to save iptables from the kernel
     TABLES="/tmp/opti-tests-iptables-save-output"
     ERRORS="/tmp/opti-tests-iptables-save-errors"
@@ -100,6 +111,7 @@ test_Good_iptables_save_with_simple_log()
 
 test_Run_python_part_without_log()
 {
+	[ $ID -ne 0 ] && startSkipping
     TABLES="/tmp/opti-tests-iptables-save-output"
     OPTOUT="/tmp/opti-tests-iptables-optimizer-output"
     STATIS="/tmp/opti-tests-iptables-optimizer-partitions"
@@ -111,6 +123,7 @@ test_Run_python_part_without_log()
 
 test_Run_python_part_with_simple_log()
 {
+	[ $ID -ne 0 ] && startSkipping
     TABLES="/tmp/opti-tests-iptables-save-output"
     OPTOUT="/tmp/opti-tests-iptables-optimizer-output"
     STATIS="/tmp/opti-tests-iptables-optimizer-partitions"
@@ -122,6 +135,7 @@ test_Run_python_part_with_simple_log()
 
 test_Run_python_part_with_verbose_log()
 {
+	[ $ID -ne 0 ] && startSkipping
     TABLES="/tmp/opti-tests-iptables-save-output"
     OPTOUT="/tmp/opti-tests-iptables-optimizer-output"
     STATIS="/tmp/opti-tests-iptables-optimizer-partitions"
@@ -134,6 +148,7 @@ test_Run_python_part_with_verbose_log()
 
 test_Bad_iptables_save()
 {
+	[ $ID -ne 0 ] && startSkipping
     # try to save iptables from the kernel
     TABLES="/tmp/opti-tests-iptables-save-output"
     touch $TABLES
@@ -150,6 +165,7 @@ test_Bad_iptables_save()
 
 test_Correct_iptables_restore()
 {
+	[ $ID -ne 0 ] && startSkipping
     # try to restore iptables file into the kernel
     TABLES="/tmp/opti-tests-iptables-save-output"
     NORMAL="/tmp/opti-tests-iptables-restore-output"
@@ -162,6 +178,7 @@ test_Correct_iptables_restore()
 
 test_Faulty_iptables_restore()
 {
+	[ $ID -ne 0 ] && startSkipping
     # try to restore faulty iptables file into the kernel
     # create a faulty iptables statement and append
     TABLES="/tmp/opti-tests-iptables-save-output"
@@ -182,15 +199,14 @@ oneTimeSetUp()
     #[ ! -x /usr/share/pyshared/iptables-optimizer.py ] && \
     #    ln -sf ./iptables_optimizer.py /usr/share/pyshared/iptables_optimizer.py
     log_start
-    iptables -F
-    iptables-restore -c reference-input
+	[ $ID -eq 0 ] && iptables -F
+	[ $ID -eq 0 ] && iptables-restore -c reference-input
 }
 
 oneTimeTearDown()
 {
     :
-    #rm -f /tmp/opti*
-    #iptables -F
+    rm -f /tmp/opti*
 }
 
 # load shunit2 and execute the tests
