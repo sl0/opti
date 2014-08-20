@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 #
 """
-    iptables-optimizer.py:
+    iptables_optimizer.py:
     optimize iptables ruleset in userland
     in relation to usage (packet counters)
 
