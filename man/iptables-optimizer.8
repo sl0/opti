@@ -28,16 +28,18 @@ It runs in four steps, working directory is /var/run, id=0 is
 neccessary:
 
 .B 1.) /var/cache/iptables-optimizer/auto-apply
-is checked for read and exec flags. If they are, the file this is given
-as input to iptables-restore, afterwards it is renamed. The renaming
-follows up a simple datetime strategy, this action is logged as well.
-Thats my way of firing new rules into the machine.
+is checked for read and exec flags. If so, the file is used as
+input on running iptables-restore, afterwards it is renamed. The 
+renaming follows up a simple datetime strategy, this action is 
+logged as well. Thats my way of firing new rules into the machine.
+They are copied using scp and after that marked as executable 
+with chmod through ssh.
 
-.B 2.) iptables-save -t filter -c > reference-input
+.B 2) iptables-save -t filter -c > iptables-optimizer-save-output 2>iptables-optimizer-save-errors
 
-.B 3.) iptables_optimizer.py > reference-output
+.B 3) iptables_optimizer.py iptables-optimizer-save-output >iptables-optimizer-output 2>iptables-optimizer-partitions
 
-.B 4.) iptables-restore < reference-output
+.B 4) iptables-restore [ -c ] iptables-optimizer-output >iptables-optimizer-restore-out 2>iptables-optimizer-restore-err
 
 Of course, you might want to run it by cron every now and then.
 
@@ -54,7 +56,7 @@ sessions, because the position of the rules to be obeyed will be more
 stable.
 
 .IP -v
-Verbose logging, may be given twice.
+Verbose logging, i.e. reporting the steps and the number of rules. If given twice, the number of moves and the partitions as well.
 
 .SH "FILES"
 .B /var/cache/iptables-optimizer
