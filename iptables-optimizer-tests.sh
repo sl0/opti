@@ -9,10 +9,18 @@ export FALSE=1
 # default value for logging
 VERBLOG=0
 
+CASUAL=/tmp/opti-tests-iptables-optimizer-tests.tmp-log
+
 # fake LOG for the tests, do nothing
 casual_logger()
 {
-    cat $* >/dev/null
+    cat $* >$CASUAL
+}
+
+casual_log_lines()
+{
+    LINES=$( cat $CASUAL | wc -l )
+    echo $LINES
 }
 
 LOG=casual_logger
@@ -32,7 +40,7 @@ test_Needs_to_run_as_root()
 
 test_AutoApply_Not_Present()
 {
-	[ $ID -ne 0 ] && startSkipping
+    [ $ID -ne 0 ] && startSkipping
     # first check a non existing file for returning FALSE
     FILE="/tmp/opti-tests-auto-apply-not-present"
     check_auto_apply_ready $FILE
@@ -42,7 +50,7 @@ test_AutoApply_Not_Present()
 
 test_AutoApply_Not_Ready()
 {
-	[ $ID -ne 0 ] && startSkipping
+    [ $ID -ne 0 ] && startSkipping
     # create an existing file (0600) for returning FALSE
     FILE="/tmp/opti-tests-auto-apply-not-executable"
     touch ${FILE}
@@ -54,7 +62,7 @@ test_AutoApply_Not_Ready()
 
 test_AutoApply_Ready()
 {
-	[ $ID -ne 0 ] && startSkipping
+    [ $ID -ne 0 ] && startSkipping
     # create an existing file (0700) for returning TRUE
     FILE="/tmp/opti-tests-auto-apply"
     touch ${FILE}
@@ -66,7 +74,7 @@ test_AutoApply_Ready()
 
 test_AutoApply_Execute()
 {
-	[ $ID -ne 0 ] && startSkipping
+    [ $ID -ne 0 ] && startSkipping
     FILE="/tmp/opti-tests-auto-apply"
     auto_apply_execute $FILE
     retval=$?
@@ -78,7 +86,7 @@ test_AutoApply_Execute()
 
 test_Modprobe_NetFilter()
 {
-	[ $ID -ne 0 ] && startSkipping
+    [ $ID -ne 0 ] && startSkipping
     # try to load iptable modules
     /sbin/modprobe iptable_filter
     retval=$?
@@ -87,7 +95,7 @@ test_Modprobe_NetFilter()
 
 test_Good_iptables_save_without_log()
 {
-	[ $ID -ne 0 ] && startSkipping
+    [ $ID -ne 0 ] && startSkipping
     # try to save iptables from the kernel
     TABLES="/tmp/opti-tests-iptables-save-output"
     ERRORS="/tmp/opti-tests-iptables-save-errors"
@@ -97,9 +105,9 @@ test_Good_iptables_save_without_log()
     ${_ASSERT_EQUALS_} 'iptables-save' $TRUE ${retval}
 }
 
-test_Good_iptables_save_with_simple_log()
+test_Good_iptables_save_simple_log()
 {
-	[ $ID -ne 0 ] && startSkipping
+    [ $ID -ne 0 ] && startSkipping
     # try to save iptables from the kernel
     TABLES="/tmp/opti-tests-iptables-save-output"
     ERRORS="/tmp/opti-tests-iptables-save-errors"
@@ -111,7 +119,7 @@ test_Good_iptables_save_with_simple_log()
 
 test_Run_python_part_without_log()
 {
-	[ $ID -ne 0 ] && startSkipping
+    [ $ID -ne 0 ] && startSkipping
     TABLES="/tmp/opti-tests-iptables-save-output"
     OPTOUT="/tmp/opti-tests-iptables-optimizer-output"
     STATIS="/tmp/opti-tests-iptables-optimizer-partitions"
@@ -121,9 +129,9 @@ test_Run_python_part_without_log()
     ${_ASSERT_EQUALS_} 'run-python-part' $TRUE ${retval}
 }
 
-test_Run_python_part_with_simple_log()
+test_Run_python_part_simple_log()
 {
-	[ $ID -ne 0 ] && startSkipping
+    [ $ID -ne 0 ] && startSkipping
     TABLES="/tmp/opti-tests-iptables-save-output"
     OPTOUT="/tmp/opti-tests-iptables-optimizer-output"
     STATIS="/tmp/opti-tests-iptables-optimizer-partitions"
@@ -133,22 +141,38 @@ test_Run_python_part_with_simple_log()
     ${_ASSERT_EQUALS_} 'run-python-part' $TRUE ${retval}
 }
 
-test_Run_python_part_with_verbose_log()
+test_Run_python_part_verb_log_all_chains()
 {
-	[ $ID -ne 0 ] && startSkipping
+    [ $ID -ne 0 ] && startSkipping
     TABLES="/tmp/opti-tests-iptables-save-output"
     OPTOUT="/tmp/opti-tests-iptables-optimizer-output"
     STATIS="/tmp/opti-tests-iptables-optimizer-partitions"
     VERBLOG=2
-    run_python_part $TABLES $OPTOUT $STATIS
+    run_python_part $TABLES $OPTOUT $STATIS $FALSE
     retval=$?
     ${_ASSERT_EQUALS_} 'run-python-part' $TRUE ${retval}
+    COUNT=$( casual_log_lines )
+    ${_ASSERT_EQUALS_} 'verbose:5-lines-expected ' 5 $COUNT
+}
+
+test_Run_python_part_verb_log_in_out_chains()
+{
+    [ $ID -ne 0 ] && startSkipping
+    TABLES="/tmp/opti-tests-iptables-save-output"
+    OPTOUT="/tmp/opti-tests-iptables-optimizer-output"
+    STATIS="/tmp/opti-tests-iptables-optimizer-partitions"
+    VERBLOG=2
+    run_python_part $TABLES $OPTOUT $STATIS $TRUE
+    retval=$?
+    ${_ASSERT_EQUALS_} 'run-python-part' $TRUE ${retval}
+    COUNT=$( casual_log_lines )
+    ${_ASSERT_EQUALS_} 'verbose:5-lines-expected ' 2 $COUNT
 }
 
 
 test_Bad_iptables_save()
 {
-	[ $ID -ne 0 ] && startSkipping
+    [ $ID -ne 0 ] && startSkipping
     # try to save iptables from the kernel
     TABLES="/tmp/opti-tests-iptables-save-output"
     touch $TABLES
@@ -165,7 +189,7 @@ test_Bad_iptables_save()
 
 test_Correct_iptables_restore()
 {
-	[ $ID -ne 0 ] && startSkipping
+    [ $ID -ne 0 ] && startSkipping
     # try to restore iptables file into the kernel
     TABLES="/tmp/opti-tests-iptables-save-output"
     NORMAL="/tmp/opti-tests-iptables-restore-output"
@@ -178,7 +202,7 @@ test_Correct_iptables_restore()
 
 test_Faulty_iptables_restore()
 {
-	[ $ID -ne 0 ] && startSkipping
+    [ $ID -ne 0 ] && startSkipping
     # try to restore faulty iptables file into the kernel
     # create a faulty iptables statement and append
     TABLES="/tmp/opti-tests-iptables-save-output"
@@ -196,11 +220,9 @@ test_Faulty_iptables_restore()
 oneTimeSetUp()
 {
     :
-    #[ ! -x /usr/share/pyshared/iptables-optimizer.py ] && \
-    #    ln -sf ./iptables_optimizer.py /usr/share/pyshared/iptables_optimizer.py
     log_start
-	[ $ID -eq 0 ] && iptables -F
-	[ $ID -eq 0 ] && iptables-restore -c reference-input
+    [ $ID -eq 0 ] && iptables -F
+    [ $ID -eq 0 ] && iptables-restore -c reference-input
 }
 
 oneTimeTearDown()
