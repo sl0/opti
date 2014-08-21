@@ -10,8 +10,8 @@ shelltests:
 testing:
 	/usr/bin/tox
 
-#rpm:
-#	python setup.py bdist_rpm
+rpm:
+	python3 setup.py bdist_rpm
 
 deb:
 	gbp buildpackage --git-pbuilder
