@@ -15,7 +15,9 @@
 #    -c    if present, no resetting the paket/byte counters
 #          for easier long term debugging
 #
-#    -v     turns on logging, twice is more verbose
+#    -i    verbose logging reduced to INPUT and OUTPUT chains
+#
+#    -v    turns on logging, twice is more verbose
 #
 ##############################################################
 # iptables-optimizer runs in discrete steps:
@@ -45,6 +47,9 @@
 # first, no surprises by any language wanted
 export LANG=C
 #
+TRUE=0
+FALSE=1
+#
 # NAME is for logging, the shorter the better!
 NAME="opti"
 #
@@ -71,9 +76,7 @@ VERBLOG=0
 # if 1, steps are logged
 # if 2, partition details are logged as well
 #
-TRUE=0
-FALSE=1
-
+INOUT=$FALSE
 #
 source iptables-optimizer-functions
 #
@@ -85,11 +88,12 @@ set -o pipefail
 #
 # evaluate command line arguments
 #
-while getopts ":acv" opt; do
+while getopts ":acvw" opt; do
   case $opt in
     a) AUTO=${AUTO__DIR}/unwanted ;;
     c) COUNTER=1;;
     v) VERBLOG=$(( ${VERBLOG} + 1 ));;
+    w) INOUT=$TRUE; VERBLOG=2;;
     #\?) echo "Invalid option: -$OPTARG" >&2 ;;
   esac
 done
@@ -105,7 +109,7 @@ cd $WORKBENCH
 #
 save_the_tables iptables-optimizer-save-output iptables-optimizer-save-errors
 #
-run_python_part iptables-optimizer-save-output iptables-optimizer-output iptables-optimizer-partitions
+run_python_part iptables-optimizer-save-output iptables-optimizer-output iptables-optimizer-partitions $INOUT
 #
 load_the_tables iptables-optimizer-output iptables-optimizer-restore-out iptables-optimizer-restore-err $COUNTER
 #
