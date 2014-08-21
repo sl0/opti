@@ -1,9 +1,11 @@
 iptables-optimizer (0.9.10) unstable; urgency=low
 
   [ Johannes Hubertz ]
-  * shell wrapper rewritten and now accompanied by tests
+  * shell wrapper rewritten and now accompanied by shunit2 tests
   * README.txt and man page updated to new iptables-optimizer
-  * python and tox adapted to 3.4
+  * options introduced: -a -c -v -w
+  * python and tox adapted to 2.7 and 3.4
+  * sphinx-documentation still needs more work
 
  -- Johannes Hubertz <johannes@hubertz.de>  Mon, 18 Aug 2014 15:30:17 +0200
 
