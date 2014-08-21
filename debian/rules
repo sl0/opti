@@ -3,6 +3,24 @@
 
 export DH_VERBOSE=1
 export DH_OPTIONS=-v
+export DEB_BUILD_OPTIONS=1
+
+PYTHON2=$(shell pyversions -vr)
+#PYTHON3=$(shell py3versions -vr)
+
+# Prevent setuptools/distribute from accessing the internet.
+export http_proxy = http://127.0.9.1:9
+
+
+%:
+	dh $@ --with python2,sphinxdoc
+
+build-python%:
+	python$* setup.py build
+
+install-python%:
+	python$* setup.py install --root=$(CURDIR)/debian/tmp --install-layout=deb
+
 
 build: build-stamp
 
@@ -12,9 +30,13 @@ build-stamp:
 clean:
 	dh_clean
 
-install:	build
+#install:	build
+
+override_dh_install:
 	dh_prep
 	dh_installdirs /usr/sbin /usr/share/iptables-optimizer /usr/share/pyshared /var/cache/iptables-optimizer
+	dh_installman --language=C man/*
+	dh_installdocs --exclude=html
 	cd $(CURDIR)/debian/iptables-optimizer/usr/share/pyshared && \
 		cp $(CURDIR)/iptables_optimizer.py iptables_optimizer.py 
 	cd $(CURDIR)/debian/iptables-optimizer/usr/share/iptables-optimizer && \
@@ -23,28 +45,16 @@ install:	build
 	cd $(CURDIR)/debian/iptables-optimizer/usr/sbin && \
 		sed -e 's!^source iptables-!source /usr/share/iptables-optimizer/iptables-!' < $(CURDIR)/iptables-optimizer > iptables-optimizer && \
 		chmod 755 iptables-optimizer
+	cd $(CURDIR)
 	dh_lintian
 
-# Build architecture-independent files here.
-build-arch: build
-build-indep: build
+override_dh_installdocs:
+	python setup.py build_sphinx
+	dh_installdocs --package=iptables-optimizer-doc build/sphinx/html
 
-# Note that the following form is recommended however:
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf build
+	rm -rf *.egg-info
 
-build-arch: build-stamp
-build-indep: build-stamp
-binary-indep: build install
-	dh_installchangelogs
-	dh_install
-	dh_installdocs
-	dh_installman --language=C man/*
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install configure
 
