@@ -9,13 +9,13 @@ if sys.version_info >= (3,):
 
 
 setup(name='iptables-optimizer',
-    description='runtime iptables sorting by packet-counters',
+    description='runtime iptables sorting by packet counters',
     long_description=open('README.txt').read(),
     version='0.9.10',
     license='GNU General Public License version 3 (or later)',
-    platforms='GNU/Linux 2.6.x, GNU/Linux 3.x',
+    platforms=['Linux'],
     author='Johannes Hubertz',
-    author_email='Johannes@hubertz.de',
+    author_email='johannes@hubertz.de',
     url='https://github.com/sl0/opti.git',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -29,5 +29,6 @@ setup(name='iptables-optimizer',
         'Topic :: Utilities',
     ],
     py_modules=['iptables_optimizer'],
-    scripts=['iptables-optimizer'],
+    scripts=['iptables-optimizer', 'iptables-optimizer-functions'],
+    **kw
     )
