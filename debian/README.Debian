@@ -1,8 +1,13 @@
 iptables-optimizer
 ------------------
 
- This pyhton executable works with  python2.7
- and python3.4 as tested in sources
- with tox, see tox.ini in the source package.
+ iptables-optimizer is now written as a shell
+ script, which functions are sourced from
+ another file, reason is to make testing with
+ shunit2 possible. The shell excutes the
+ functions, one of them calls the python,
+ which works with  python2.7 and python3.4
+ as tested in sources with tox, see tox.ini
+ in the source package.
 
- -- Johannes HUbertz <johannes@hubertz.de>
+ -- Johannes Hubertz <johannes@hubertz.de>
