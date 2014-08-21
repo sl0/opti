@@ -6,7 +6,7 @@ Optimize kernels ruleset by sorting in relation to usage.
 
 Author:     Johannes Hubertz <johannes@hubertz.de>
 
-Date:       2014-08-18
+Date:       2014-08-21
 
 Version:    0.9.10
 
@@ -37,9 +37,15 @@ benefit of the optimizer-script.
 Changes to 0.9.10:
 The shell wrapper was completely rewritten. Using shunit2
 tests have been written to make the wrapper as reliable
-as the python part of the iptables-optimizer. A small
-modification on the iptables_optimizer.py: As an command
-line argument it accepts a filename for reading now.
+as the python part of the iptables-optimizer. Some command
+line arguments are evaluated:
+-a do not look for /var/cache/iptables-optimizer/auto-apply
+-c do not reset paket/byte counters on restoring tables
+-v add logging, twice shows partition tables
+-w shows partition tables for INPUT and OUTPUT only
+
+A small modification on the iptables_optimizer.py: As an
+command line argument it accepts a filename for reading now.
 
 Changes to 0.9.9:
 Debian package now ships a single python file, no more
