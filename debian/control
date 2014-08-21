@@ -2,21 +2,31 @@ Source: iptables-optimizer
 Maintainer: Johannes Hubertz <johannes@hubertz.de>
 Section: utils
 Priority: optional
-Build-Depends: python (>= 2.6.5-3), debhelper (>= 9), python-support
-Standards-Version: 3.9.3
+Build-Depends: python (>= 2.6.5-3), debhelper (>= 9), shunit2 (>=2.1.6), python-sphinx (>= 1.2.2) | python3-sphinx, python-setuptools
+Standards-Version: 3.9.5.0
 
 Package: iptables-optimizer
+Section: utils
 Architecture: all
 Depends: python (>= 2.6.5), ${misc:Depends}
 Description: sort iptables due to packet-counters
- as read their values from file. stdout comes 
- with [0:0] for iptables-restore -c
- stderr prints partitions and changes within as 
- numbers for your convienience, may be logged
+ iptables-optimizer is a shellscript for sorting
+ iptables chains due to packet/byte counters while
+ respecting administrators artwork. Inside, the
+ pythonic iptables_optimizer.py does the work.
  .
- iptables-optimizer is a wrapper shellscript for checking, 
- logging and kernel-reads and -writes, and it calls 
- the pythonic iptables_optimizer.py
+ Reliability is improved by unittests for the shell
+ and the python source.
  .
  License: GPLv3, or any newer version, see LICENSE.txt
  Author:  Johannes Hubertz   <johannes@hubertz.de>
+
+
+Package: iptables-optimizer-doc
+Section: doc
+Architecture: all
+Depends: ${misc:Depends}
+Description: sphinx documentation for iptables-optimizer
+ which reduces latency by sorting the chains on the
+ packet/byte counter values while respecting the
+ administrators artwork. The tests are described as well.
