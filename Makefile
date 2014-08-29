@@ -27,4 +27,5 @@ clean:
 	@rm -rf .coverage *.pyc reference-output rs ts build
 	@rm -rf __pycache__ iptables_optimizer.egg-info/ dist
 	@rm -rf *.py3 .tox .noseids
+	@dh_clean || /bin/true
 
