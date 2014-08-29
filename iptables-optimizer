@@ -94,7 +94,7 @@ while getopts ":acvw" opt; do
     c) COUNTER=1;;
     v) VERBLOG=$(( ${VERBLOG} + 1 ));;
     w) INOUT=$TRUE; VERBLOG=2;;
-    #\?) echo "Invalid option: -$OPTARG" >&2 ;;
+    \?) echo "Invalid option: -$OPTARG" >&2 ; exit 1;;
   esac
 done
 ###############################################
