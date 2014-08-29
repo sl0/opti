@@ -2,35 +2,41 @@
 iptables-optimizer - intro
 ==========================
 
-In many SMB environments long term running packet filters are quite normal. 
-Usually the administrators are often asked to add a rule for a special purpose, 
-but only accidentally are kept informed about the end of life for the 
-needs. So the set of rules grows over time. Organizational rules may try to
-minimize this bad behavior, but nevertheless it is the normal way of doing.
+In many SMB environments long term running packet filters are quite
+normal. Usually the administrators are often asked to add a rule for
+a special purpose, but only accidentally are kept informed about the
+end of life for the needs. So the set of rules grows over long time.
+Organizational rules may try to minimize this bad behavior, but
+nevertheless it is the normal way of doing.
 
-Now assume you have a filtering Linux router with some thousands iptables
-rules in its filtering chains. Unfortunately these this will produce 
-latency for every traversing packet. And of course, this latency is 
-unwanted behavior. The only useful way of improving is to reduce the 
-length of the chains. Buts that is not easy if ever possible. Usually 
-nobody is responsible enough to say, this special rule is no longer 
-needed. You would like to know somebody for every rule. 
+Now assume you have a filtering Linux router with some thousands of
+iptables rules in its filtering chains. Unfortunately these this will
+produce latency for every traversing packet. And of course, this
+latency is unwanted behavior. The only useful way of improving is to
+reduce the length of the chains. Buts that is not easy if ever
+possible. Usually nobody is responsible enough to say, this special
+rule is no longer needed. You would like to know somebody for every
+rule.
 
-One of the first ideas for an optimization was to use the counters on each
-rule to see, if it is needed at all. The set of rules should run for a month 
-and all those rules showing zero usage could be deleted. Sounds easy, but 
-this is not as simple doing as said. Initial step to a solution was to
-add the beautiful comment module in every iptables-command and a number
-from the corresponding source of the rule. So it was easy to identify
-the iptables-command within the source. Nevertheless the finding of
-useless rules was not done because some lack of time. The latency grew.
+One of the first ideas for an optimization was to use the counters
+on each rule to see, if it is needed at all. The set of rules should
+run for a month and all those rules showing zero usage could be
+deleted. Sounds easy, but this is not as simple doing as said.
+Initial step to a solution was to add the beautiful comment module
+in every iptables-command and a number from the corresponding source
+of the rule. So it was easy to identify the iptables-command within
+the source. Nevertheless the finding of useless rules was not done
+because some lack of time. The latency grew.
+
+
+
 
 Another idea came up: partitioning of the long chains into parts of same
-targets. Within a partition the rules might be sorted on behalf of the 
-packet counters so that the most often rules are searched first. And all 
-the unused rules wouldn't be consulted so much often. Sounds crazy, but 
-seemed to be `plausible <plausible.html>`_. Tests were done, python was chosen for the 
-programming part of the job. And a long and stony way started with the 
+targets. Within a partition the rules might be sorted on behalf of the
+packet counters so that the most often rules are searched first. And all
+the unused rules wouldn't be consulted so much often. Sounds crazy, but
+seemed to be `plausible <plausible.html>`_. Tests were done, python was chosen for the
+programming part of the job. And a long and stony way started with the
 first step.
 
 shell wrapper
@@ -39,7 +45,7 @@ shell wrapper
 What does it do?
 ----------------
 
-The shell wrapper simply acts in few steps: 
+The shell wrapper simply acts in few steps:
 
   1. If ``ref-with-error-in`` exists, exit immediately due to error of previous run
   2. If the administrator has spend a new rule set in ``auto-apply``, restore it into the kernel, rename, exit
@@ -48,9 +54,9 @@ The shell wrapper simply acts in few steps:
   5. Use **iptables-restore** to push the modified content in ``reference-output`` back to the kernel
   6. If called with an argument, use **logger** to put ``iptables-optimizer-partitions`` into syslog
 
-Some error-checking is done, so it is a little bit longer 
+Some error-checking is done, so it is a little bit longer
 than four lines of code. The real tricky things are done at step 3, following. In case of an error,
-reference-input is renamed to ``ref-with-error-in``, which existence is checked on startup and exit. 
+reference-input is renamed to ``ref-with-error-in``, which existence is checked on startup and exit.
 So further runs are not doing any harm after a first error.
 
 Where is it located?
@@ -91,14 +97,14 @@ running because of different operating systems, f.e. in Debian systems
 you may find python 2.5, 2.6, 2.7 and 3.2, as they are distributed as
 standard versions in etch, Lenny, squeeze and wheezy. Surprisingly the
 subprocess behavior changed a lot in these. I was very frustrated
-about that and therefore I decided not to use it. Benefit was to have 
-a single python script containing the necessary stuff without calling 
-external commands, but running well in all different python versions. 
-The external parts were migrated to an external shell script, which 
+about that and therefore I decided not to use it. Benefit was to have
+a single python script containing the necessary stuff without calling
+external commands, but running well in all different python versions.
+The external parts were migrated to an external shell script, which
 itself calls the python snippet for the complex actions now.
 
 So, what needs to be done? The filter tables are search for every
-traversing packet, all the rules are checked for matching, and if 
+traversing packet, all the rules are checked for matching, and if
 one matches, its target is applied to the packet and usually the
 action for this packet is finished. The less rules must be searched
 the quicker the packet is forwarded or dropped. So the rules should
@@ -110,9 +116,9 @@ this, and the administrators artwork shall never be destroyed by
 sorting. Let's think again, is it possible to sort the rules and to
 respect his artwork? Yes, it is possible, but few restrictions apply.
 
-In every chain we have some rules to accept, some to drop and some 
+In every chain we have some rules to accept, some to drop and some
 others, each intermixed with the others. Partitions are the key to
-those which may be sorted without affecting the overall policy. If 
+those which may be sorted without affecting the overall policy. If
 we group some consecutive rules having the same targets, we can
 exchange them without changing the policy. Sure.
 
@@ -125,17 +131,17 @@ class Filter
 ------------
 
 An instance of the Filter class reads a file, this is the result of
-all the struggles with subprocess. The file is in well known iptables-save 
-format, so we get the chain names at first and the their content. For 
+all the struggles with subprocess. The file is in well known iptables-save
+format, so we get the chain names at first and the their content. For
 each an instance of the class Chain is set up. The packet counters
-are needed, this is done by the "-c" in the 3rd step of the wrapper. 
-The init method ends up with a full representation of the kernels 
+are needed, this is done by the "-c" in the 3rd step of the wrapper.
+The init method ends up with a full representation of the kernels
 filter tables in memory.
 
 The opti method uses the opti method of all chain instances, the show
 method is just a wrapper around the many print statements for testing
-purposes and for better separating any additional information such 
-as statistics, which must be printed to stderr. Just before the ending 
+purposes and for better separating any additional information such
+as statistics, which must be printed to stderr. Just before the ending
 up the show method is used to prepare the print to stdout.
 
 
@@ -145,7 +151,7 @@ class Chain
 On reading the file, an instance of the Chain class is build on the fly.
 The appends are done using the corresponding append method, and so
 at last a complete picture of the kernels view is in memory. The opti
-method on startup uses the make_partitions method prior to the sorting 
+method on startup uses the make_partitions method prior to the sorting
 related to the packet counters.
 
 
