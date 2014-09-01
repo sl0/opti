@@ -9,8 +9,8 @@ end of life for the needs. So the set of rules grows over long time.
 Organizational rules may try to minimize this bad behavior, but
 nevertheless it is the normal way of doing.
 
-Now assume you have a filtering Linux router with some thousands of
-iptables rules in its filtering chains. Unfortunately these this will
+Assume you have a filtering Linux router with some thousands of
+iptables rules in its iptables chains. Unfortunately these this will
 produce latency for every traversing packet. And of course, this
 latency is unwanted behavior. The only useful way of improving is to
 reduce the length of the chains. Buts that is not easy if ever
@@ -29,81 +29,76 @@ the source. Nevertheless the finding of useless rules was not done
 because some lack of time. The latency grew.
 
 
-
-
 Another idea came up: partitioning of the long chains into parts of same
 targets. Within a partition the rules might be sorted on behalf of the
 packet counters so that the most often rules are searched first. And all
 the unused rules wouldn't be consulted so much often. Sounds crazy, but
-seemed to be `plausible <plausible.html>`_. Tests were done, python was chosen for the
-programming part of the job. And a long and stony way started with the
-first step.
+seemed to be `plausible <plausible.html>`_. Tests were done, python was 
+chosen for the programming part of the job. And a long and stony way 
+started with the first step.
 
 shell wrapper
 =============
 
-What does it do?
-----------------
+The shell wrapper simply acts in four steps after evaluating the options:
 
-The shell wrapper simply acts in few steps:
+  1. If an executable file ``/var/cache/iptables-optimizer/auto-apply`` exists, restore it into the kernel and rename it
 
-  1. If ``ref-with-error-in`` exists, exit immediately due to error of previous run
-  2. If the administrator has spend a new rule set in ``auto-apply``, restore it into the kernel, rename, exit
-  3. Use **iptables-save -t filter -c** to store the kernels tables to a file ``reference-input``
-  4. Run iptables_optimizer.py, save stdout to ``reference-output``, stderr to ``iptables-optimizer-partitions``
-  5. Use **iptables-restore** to push the modified content in ``reference-output`` back to the kernel
-  6. If called with an argument, use **logger** to put ``iptables-optimizer-partitions`` into syslog
+  2. Use ``iptables-save -t filter -c`` to store the kernels tables into a file 
 
-Some error-checking is done, so it is a little bit longer
-than four lines of code. The real tricky things are done at step 3, following. In case of an error,
-reference-input is renamed to ``ref-with-error-in``, which existence is checked on startup and exit.
-So further runs are not doing any harm after a first error.
+  3. Run ``iptables_optimizer.py``, save stdout and stderr for errorchecking
 
-Where is it located?
---------------------
+  4. Use ``iptables-restore`` to push back the rules into the kernel
 
-Some Debian conventions about the path for the files are respected:
+Some error-checking is done, so the code is a little bit more than four lines. 
+In case of an error, the shell wrapper exits immediately due to runnig with ``bash -e``. 
+The ``pipefail`` option ensures failures to be seen in piped commands as well.
+The real tricky things are done in the pythonic part.
 
-+---------------------------------------------------------+
-|  ``Path``                                               |
-+=========================================================+
-|  ``/usr/sbin/iptables-optimizer``                       |
-+---------------------------------------------------------+
-|  ``/usr/share/man/man8/iptables-optimizer.8.gz``        |
-+---------------------------------------------------------+
-|  ``/usr/share/pyshared/iptables_optimizer.py``          |
-+---------------------------------------------------------+
-|  ``/var/cache/iptables-optimizer/auto-apply``           |
-+---------------------------------------------------------+
-|  ``/var/cache/iptables-optimizer/auto-apply-YYYYMMDD``  |
-+---------------------------------------------------------+
-|  ``/var/run/{reference-input,ref-with-error-in}``       |
-+---------------------------------------------------------+
-|  ``/var/run/{reference-output,ref-with-error-out}``     |
-+---------------------------------------------------------+
-|  ``/var/run/iptables-optimizer-partitions``             |
-+---------------------------------------------------------+
-|  ``/var/run/iptables-optimizer-last-run``               |
-+---------------------------------------------------------+
+Some command line options are provided::
+
+-a    do not evaluate auto-apply
+-c    keep the packet/byte counters on restoring
+-h    help message about valid options and exit 1
+-v    verbose logging about the steps. If given twice, partitions and moves are logged
+-w    logging partiontions and moves for INPUT and OUTPUT chains only, implies -vv, 
+
+
+Usually the iptables-optimizer exits with a return value of zero indicating no error. 
+The debian packaging produces two files for dpkg::
+
+   iptables-optimizer_x.y.z-v.deb
+   iptables-optimizer-doc_x.y.z-v.deb
+
+For production environment the documents are not needed, for your understanding 
+you do not need the binary package at all.
+
+All used functions within the shell wrapper are sourced from another file, 
+``iptables-optimizer-functions``. This seems to be useful for making them testable
+with Karen Wards shunit2, which is available as free software.
 
 
 python code
 ===========
 
+The only reason to have a shell wrapper for the python script was found in 
+different python versions, which treated the subprocess module very different 
+in different Debian stable versions from lenny to jessie.
+
 Python comes with batteries included, they say. The subprocess module
 can execute every shell command from within the python code. Sounds well,
 worked well until --- sometimes you have some different python versions
 running because of different operating systems, f.e. in Debian systems
-you may find python 2.5, 2.6, 2.7 and 3.2, as they are distributed as
-standard versions in etch, Lenny, squeeze and wheezy. Surprisingly the
-subprocess behavior changed a lot in these. I was very frustrated
-about that and therefore I decided not to use it. Benefit was to have
-a single python script containing the necessary stuff without calling
+you may find python 2.5, 2.6, 2.7 and 3.2, 3.3 and 3.4, just like they 
+are distributed as standard versions in etch, Lenny, squeeze and wheezy. 
+Surprisingly the subprocess behavior changed a lot in these. I was very 
+frustrated about that and therefore decided not to use it. Benefit was 
+to have a single python script containing the necessary stuff without calling
 external commands, but running well in all different python versions.
 The external parts were migrated to an external shell script, which
 itself calls the python snippet for the complex actions now.
 
-So, what needs to be done? The filter tables are search for every
+So, what needs to be done? The filter tables are searched for every
 traversing packet, all the rules are checked for matching, and if
 one matches, its target is applied to the packet and usually the
 action for this packet is finished. The less rules must be searched
@@ -117,32 +112,35 @@ sorting. Let's think again, is it possible to sort the rules and to
 respect his artwork? Yes, it is possible, but few restrictions apply.
 
 In every chain we have some rules to accept, some to drop and some
-others, each intermixed with the others. Partitions are the key to
-those which may be sorted without affecting the overall policy. If
-we group some consecutive rules having the same targets, we can
-exchange them without changing the policy. Sure.
+others, each intermixed with the others. From a mathematical point 
+of view (set theory) partitions are the key to solve the puzzle. If 
+we group consecutive rules having the same targets, inside these groups 
+we can exchange the rule without changing the policy. Sure.
 
+So we have to find partition borders and then sort within each partition
+on behalf of the packet counters.
 
 Two python classes were build: Chain and Filter. An instance of the
 Filter class holds at least the predefined chains, perhaps some
-user defined chains. On creation it reads the given file.
+user defined chains. On creation of an instance it reads the given 
+file.
+
 
 class Filter
 ------------
 
-An instance of the Filter class reads a file, this is the result of
-all the struggles with subprocess. The file is in well known iptables-save
-format, so we get the chain names at first and the their content. For
-each an instance of the class Chain is set up. The packet counters
-are needed, this is done by the "-c" in the 3rd step of the wrapper.
-The init method ends up with a full representation of the kernels
-filter tables in memory.
+Instanciating the Filter class reads a file, which is an output of 
+``iptables-save -c``, so we get the chain names at first and then
+their content. For each chain an instance of the class Chain is 
+set up. The packet counters are needed, this is done by the "-c" in the 
+2nd step of the wrapper. The init method ends up with a full 
+representation of the kernels filter tables in memory.
 
 The opti method uses the opti method of all chain instances, the show
 method is just a wrapper around the many print statements for testing
 purposes and for better separating any additional information such
-as statistics, which must be printed to stderr. Just before the ending
-up the show method is used to prepare the print to stdout.
+as statistics, which then are printed out to stderr. This kind 
+separation is fine, especially within the shell wrapper.
 
 
 class Chain
