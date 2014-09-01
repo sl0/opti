@@ -1,11 +1,11 @@
 
-.TH iptables-optimizer 8 "August 2014" "Johannes Hubertz" " "
+.TH iptables-optimizer 8 "September 2014" "Johannes Hubertz" " "
 
 .SH NAME
 iptables-optimizer \- optimize iptables filter-chains in kernel depending on their usage counters
 
 .SH SYNOPSIS
-.B iptables-optimizer [-a] [-c] [-v[v]] [-w]
+.B iptables-optimizer [-a] [-c] [-h] [-v[v]] [-w]
 .br
 
 .SH DESCRIPTION
@@ -54,6 +54,9 @@ counters on restoring the tables, i.e these counters will be reloaded
 with the sorted rules. Intention is to support long term debugging
 sessions, because the position of the rules to be obeyed will be more
 stable.
+
+.IP -h
+Shows a brief help message about valid optional arguments and exits 1
 
 .IP -v
 Verbose logging, i.e. reporting the steps and the number of rules. If given twice, the number of moves and the partitions as well.
