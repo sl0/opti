@@ -5,13 +5,14 @@ iptables-optimizer-tests.sh - shell tests
 shunit2
 -------
 
-Thanks to Kate Ward, who has build the shunit2, which is available in debian universe.
-A reference-input file is present as it is needed to run the tests.
+Thanks to Kate Ward, who has build the shunit2, which is available in the debian universe.
+A reference file for input into iptables-optimizer is present as it is needed to run the tests.
 
-As the functions of the shell wrapper are source from an external file,
+All the functions of the shell wrapper are sourced from an external file, so
 they may be tested independantly from the wrapper itself. Unfortunateley
 only root is allowed to run the iptables-optimier as it modifies the rules 
-within the kernel.
+within the kernel. So the effctive uid is checked in the first test and all others are skipped
+if it is not zero.
 
 Excuting the tests is done like this as root user (uid=0)::
 
@@ -38,7 +39,7 @@ Excuting the tests is done like this as root user (uid=0)::
    .../opti#
 
 
-If the executing user is not uid=0, tests faile like this::
+If the executing user is not uid=0, the tests fail like this::
 
    .../devel/opti  master $ bash iptables-optimizer-tests.sh
    test_Needs_to_run_as_root
@@ -63,6 +64,6 @@ If the executing user is not uid=0, tests faile like this::
    FAILED (failures=1,skipped=18)
    .../devel/opti  master $
 
-As a consequence, the makefile will stop. So be sure to be root.
+As a consequence, the makefile will stop and no packages are build. So be sure to be root.
 
 Testing is great fun.
