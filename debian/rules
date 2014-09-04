@@ -37,7 +37,9 @@ override_dh_install:
 	dh_installdirs /usr/sbin /usr/share/iptables-optimizer /usr/share/pyshared /var/cache/iptables-optimizer
 	dh_installman --language=C man/*
 	cd $(CURDIR)/debian/iptables-optimizer/usr/share/man/man8 && \
-		cat ${CURDIR}/man/iptables-optimizer.8 | sed -e 's/iptables/ip6tables/g' | gzip > ip6tables-converter.8.gz
+		cat ${CURDIR}/man/iptables-optimizer.8 | \
+        sed -e 's/iptables/ip6tables/g' |  sed -e 's/auto-apply/auto-apply6/g' | \
+        gzip > ip6tables-converter.8.gz
 	dh_installdocs --exclude=html
 	cd $(CURDIR)/debian/iptables-optimizer/usr/share/pyshared && \
 		cp $(CURDIR)/iptables_optimizer.py iptables_optimizer.py 

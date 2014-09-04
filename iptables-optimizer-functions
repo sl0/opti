@@ -2,8 +2,8 @@
 #
 # License:  GNU General Public License version 3 or newer
 # Author:   Johannes Hubertz <johannes@hubertz.de>
-# Version:  0.9.10
-# Date:     2014-08-20
+# Version:  0.9.11
+# Date:     2014-09-04
 #
 # these functions are sourced in iptables-optimizer and it's tests
 
@@ -17,8 +17,10 @@ usage() {
 }
 
 error_func() {
+    echo "line: ${BASH_LINENO} command: ${BASH_COMMAND}"
     echo "line: ${BASH_LINENO} command: ${BASH_COMMAND}" | ${LOG}
-    echo "Error: ${ERROR_TEXT}"     | ${LOG}
+    echo "Error: ${ERROR_TEXT}"
+    echo "Error: ${ERROR_TEXT}"                          | ${LOG}
 }
 
 log_start()
@@ -47,7 +49,7 @@ log_partitions()
 
 count_tables()
 {
-    # just count the number of lines to log with a 
+    # just count the number of lines to log with a
     # given comment plus mentioning about errors
     local _file=$1
     local _errv=$2
@@ -84,7 +86,7 @@ auto_apply_execute()
     /sbin/ip${IP6}tables-restore -c < ${_pathname} >${_STDO} 2>${_STDE}
     retval=$?
 
-    count_tables ${_pathname} ${retval} 'auto-apply:' 
+    count_tables ${_pathname} ${retval} 'auto-apply:'
 
     [ ${retval} -ne 0 ] && return $FALSE
 
@@ -127,8 +129,8 @@ load_the_tables()
     /sbin/ip${IP6}tables-restore $RESET_VAL < ${_tables} >${_stdout} 2>${_stderr}
     retval=$?
 
-    [ ${VERBLOG} -eq 0 ] && count_tables ${_tables} ${retval} 'ready' 
-    [ ${VERBLOG} -gt 0 ] && count_tables ${_tables} ${retval} 'Step 3:' 
+    [ ${VERBLOG} -eq 0 ] && count_tables ${_tables} ${retval} 'ready'
+    [ ${VERBLOG} -gt 0 ] && count_tables ${_tables} ${retval} 'Step 3:'
 
     [ ${retval} -eq 0 ] && return $TRUE
 

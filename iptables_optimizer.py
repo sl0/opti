@@ -8,8 +8,8 @@
     in relation to usage (packet counters)
 
 Author:     Johannes Hubertz johannes@hubertz.de
-Date:       2014-08-18
-Version:    0.9.10
+Date:       2014-09-04
+Version:    0.9.11
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
