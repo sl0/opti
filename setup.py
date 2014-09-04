@@ -11,7 +11,7 @@ if sys.version_info >= (3,):
 setup(name='iptables-optimizer',
     description='runtime iptables sorting by packet counters',
     long_description=open('README.txt').read(),
-    version='0.9.10',
+    version='0.9.11',
     license='GNU General Public License version 3 (or later)',
     platforms=['Linux'],
     author='Johannes Hubertz',
@@ -29,6 +29,6 @@ setup(name='iptables-optimizer',
         'Topic :: Utilities',
     ],
     py_modules=['iptables_optimizer'],
-    scripts=['iptables-optimizer', 'iptables-optimizer-functions'],
+    scripts=['iptables-optimizer', 'ip6tables-optimizer', 'iptables-optimizer-functions'],
     **kw
     )
