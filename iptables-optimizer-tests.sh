@@ -11,6 +11,9 @@ VERBLOG=0
 
 CASUAL=/tmp/opti-tests-iptables-optimizer-tests.tmp-log
 
+IP6=""
+[ `basename $0` == "ip6tables-optimizer-tests.sh" ] && IP6="6"
+
 # fake LOG for the tests, do nothing
 casual_logger()
 {
@@ -220,14 +223,18 @@ test_Faulty_iptables_restore()
 oneTimeSetUp()
 {
     :
-    log_start
-    [ $ID -eq 0 ] && iptables -F
-    [ $ID -eq 0 ] && iptables-restore -c reference-input
+    #log_start
+    [ $ID -eq 0 ] && ip${IP6}tables-save -c > /tmp/opti-tests-tables-before-status
+    [ $ID -eq 0 ] && ip${IP6}tables -F
+    [ $ID -eq 0 ] && ip${IP6}tables-restore -c reference-input${IP6}
 }
 
 oneTimeTearDown()
 {
     :
+    [ $ID -eq 0 ] && ip${IP6}tables -F
+    [ $ID -eq 0 ] && ip${IP6}tables -X IPSEC
+    [ $ID -eq 0 ] && ip${IP6}tables-restore -c /tmp/opti-tests-tables-before-status
     rm -f /tmp/opti*
 }
 

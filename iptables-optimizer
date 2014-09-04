@@ -52,12 +52,16 @@ export LANG=C
 TRUE=0
 FALSE=1
 #
+# check if iptables or ip6tables
+IP6=""
+[ `basename $0` == "ip6tables-optimizer" ] && IP6="6"
+#
 # NAME is for logging, the shorter the better!
-NAME="opti"
+NAME="opti${IP6}"
 #
 # $AUTO points to new file containing new ruleset
 AUTO__DIR=/var/cache/iptables-optimizer
-AUTO_FILE=auto-apply
+AUTO_FILE=auto-apply${IP6}
 AUTO=${AUTO__DIR}/${AUTO_FILE}
 #
 # all files are here
@@ -80,6 +84,8 @@ VERBLOG=0
 #
 INOUT=$FALSE
 #
+ERROR_TEXT="starting up"
+#
 source iptables-optimizer-functions
 #
 ###############################################
@@ -87,6 +93,8 @@ source iptables-optimizer-functions
 # stop on first error, respect errors in pipes
 set -e
 set -o pipefail
+set -o errtrace
+trap error_func ERR
 #
 # evaluate command line arguments
 #
@@ -103,18 +111,23 @@ done
 ###############################################
 #
 # start the job here
+ERROR_TEXT="started up"
 log_start
 #
 # look if new rules are present and do neccessary actions
+ERROR_TEXT="checking ${AUTO}"
 check_auto_apply_ready "${AUTO}" && auto_apply_execute "${AUTO}"
 #
 cd $WORKBENCH
 #
-save_the_tables iptables-optimizer-save-output iptables-optimizer-save-errors
+ERROR_TEXT="storing tables"
+save_the_tables ip${IP6}tables-optimizer-save-output ip${IP6}tables-optimizer-save-errors
 #
-run_python_part iptables-optimizer-save-output iptables-optimizer-output iptables-optimizer-partitions $INOUT
+ERROR_TEXT="running pythonic part"
+run_python_part ip${IP6}tables-optimizer-save-output ip${IP6}tables-optimizer-output ip${IP6}tables-optimizer-partitions $INOUT
 #
-load_the_tables iptables-optimizer-output iptables-optimizer-restore-out iptables-optimizer-restore-err $COUNTER
+ERROR_TEXT="restoring tables"
+load_the_tables ip${IP6}tables-optimizer-output ip${IP6}tables-optimizer-restore-out ip${IP6}tables-optimizer-restore-err $COUNTER
 #
 exit 0
 # EoF

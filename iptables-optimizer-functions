@@ -16,6 +16,11 @@ usage() {
     echo "-w   log about INPUT/OUTPUT chains only, implies -vv"
 }
 
+error_func() {
+    echo "line: ${BASH_LINENO} command: ${BASH_COMMAND}" | ${LOG}
+    echo "Error: ${ERROR_TEXT}"     | ${LOG}
+}
+
 log_start()
 {
     # at least one line always to syslog
@@ -75,7 +80,8 @@ auto_apply_execute()
     local _STDO=${_DIRN}/${_FILE}-stdout
     local _STDE=${_DIRN}/${_FILE}-stderr
 
-    /sbin/iptables-restore -c < ${_pathname} >${_STDO} 2>${_STDE}
+    ERROR_TEXT="/sbin/ip${IP6}tables-restore -c < ${_pathname} >${_STDO} 2>${_STDE}"
+    /sbin/ip${IP6}tables-restore -c < ${_pathname} >${_STDO} 2>${_STDE}
     retval=$?
 
     count_tables ${_pathname} ${retval} 'auto-apply:' 
@@ -95,7 +101,8 @@ save_the_tables()
     local _tables=$1
     local _errors=$2
 
-    /sbin/iptables-save -t filter -c  >${_tables} 2>${_errors}
+    ERROR_TEXT="/sbin/ip${IP6}tables-save -t filter -c  >${_tables} 2>${_errors}"
+    /sbin/ip${IP6}tables-save -t filter -c  >${_tables} 2>${_errors}
     retval=$?
 
     [ ${VERBLOG} -gt 0 ] && count_tables ${_tables} ${retval} 'Step 1:'
@@ -116,7 +123,8 @@ load_the_tables()
     RESET_VAL='-c'
     [ ${_resetv} -eq 0 ] && RESET_VAL=''
 
-    /sbin/iptables-restore $RESET_VAL < ${_tables} >${_stdout} 2>${_stderr}
+    ERROR_TEXT="/sbin/ip${IP6}tables-restore $RESET_VAL < ${_tables} >${_stdout} 2>${_stderr}"
+    /sbin/ip${IP6}tables-restore $RESET_VAL < ${_tables} >${_stdout} 2>${_stderr}
     retval=$?
 
     [ ${VERBLOG} -eq 0 ] && count_tables ${_tables} ${retval} 'ready' 
@@ -135,6 +143,7 @@ run_python_part()
     local _partitions=$3
     local _inout=$4
 
+    ERROR_TEXT="python iptables_optimizer.py ${_infile} >${_outfile} 2>${_partitions}"
     python iptables_optimizer.py ${_infile} >${_outfile} 2>${_partitions}
     retval=$?
 
