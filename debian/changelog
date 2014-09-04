@@ -1,3 +1,17 @@
+iptables-optimizer (0.9.11) unstable; urgency=medium
+
+  * shunit2 test skipping for non root users explained
+  * addig IP6 variable seems easy going
+  * new tests input-file needed for IP6
+  * minimal changes lead to ip6tables compatibility
+  * clean exit added for beauty of code
+  * ip6... manpage created with sed by replacing iptab with ip6tab..
+  * ip6tables-optimizer-tests.sh now called as well
+  * version increased to 0.9.11, ip6tables-optimizer added in setup.py
+  * version set to 0.9.11, documentation updated (Closes: #714012)
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Thu, 04 Sep 2014 22:15:26 +0200
+
 iptables-optimizer (0.9.10) unstable; urgency=low
 
   [ Johannes Hubertz ]
