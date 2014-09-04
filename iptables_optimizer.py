@@ -244,3 +244,4 @@ if __name__ == "__main__":
         print(outmsg),
     except KeyboardInterrupt as err:
         print("\rUser stopped, execution terminated")
+    sys.exit(0)
