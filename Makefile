@@ -6,6 +6,7 @@ alltests:
 
 shelltests:
 	bash iptables-optimizer-tests.sh
+	bash ip6tables-optimizer-tests.sh
 
 testing:
 	/usr/bin/tox
