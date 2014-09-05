@@ -44,19 +44,19 @@ The missing statements are the following::
     34        pass    # python2.6
 
    162        except:
-   163            self.chains        = {}    # python2.6
+   163            self.chains = {}    # python2.6
 
    236    file_to_read = "reference-input"
-   237    if len(sys.argv)       > 1:
+   237    if len(sys.argv) > 1:
    238        file_to_read = sys.argv[1]
    239    try:
-   240                 f = Filter(filename=file_to_read)
-   241        result, msg = f    .opti()
-   242        sys.stderr.write(msg)  # print partition-table t    o stderr
+   240        f = Filter(filename=file_to_read)
+   241        result, msg = f.opti()
+   242        sys.stderr.write(msg)  # print partition-table to stderr
    243        outmsg = f.show()
    244        print(outmsg),        
    245    except KeyboardInterrupt as err:
-   246        print("\rUs     er stopped, execution terminated")
+   246        print("\rUser stopped, execution terminated")
                                                                     
 
 That's not perfect, but it seems to be sufficient.
