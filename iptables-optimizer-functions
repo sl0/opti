@@ -3,7 +3,7 @@
 # License:  GNU General Public License version 3 or newer
 # Author:   Johannes Hubertz <johannes@hubertz.de>
 # Version:  0.9.11
-# Date:     2014-09-04
+# Date:     2014-09-11
 #
 # these functions are sourced in iptables-optimizer and it's tests
 
@@ -17,10 +17,8 @@ usage() {
 }
 
 error_func() {
-    echo "line: ${BASH_LINENO} command: ${BASH_COMMAND}"
-    echo "line: ${BASH_LINENO} command: ${BASH_COMMAND}" | ${LOG}
-    echo "Error: ${ERROR_TEXT}"
-    echo "Error: ${ERROR_TEXT}"                          | ${LOG}
+    echo "${ERROR_TEXT} (${BASH_SOURCE} line ${BASH_LINENO})"
+    echo "${ERROR_TEXT} (${BASH_SOURCE} line ${BASH_LINENO})" | ${LOG}
 }
 
 log_start()
@@ -90,7 +88,8 @@ auto_apply_execute()
 
     [ ${retval} -ne 0 ] && return $FALSE
 
-    /bin/mv ${_pathname} ${_NAME}
+    ERROR_TEXT="/bin/mv ${_pathname} ${_NAME}"
+    /bin/mv ${_pathname} ${_NAME} 2>&1 | $LOG
     retval=$?
     [ ${retval} -ne 0 ] && return $FALSE
 
@@ -103,8 +102,8 @@ save_the_tables()
     local _tables=$1
     local _errors=$2
 
-    ERROR_TEXT="/sbin/ip${IP6}tables-save -t filter -c  >${_tables} 2>${_errors}"
-    /sbin/ip${IP6}tables-save -t filter -c  >${_tables} 2>${_errors}
+    ERROR_TEXT="/sbin/ip${IP6}tables-save -t filter -c >${_tables} 2>${_errors}"
+    /sbin/ip${IP6}tables-save -t filter -c >${_tables} 2>${_errors}
     retval=$?
 
     [ ${VERBLOG} -gt 0 ] && count_tables ${_tables} ${retval} 'Step 1:'
