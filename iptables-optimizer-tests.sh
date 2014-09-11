@@ -79,12 +79,33 @@ test_AutoApply_Execute()
 {
     [ $ID -ne 0 ] && startSkipping
     FILE="/tmp/opti-tests-auto-apply"
+    touch ${FILE}
+    chmod 700 ${FILE}
     auto_apply_execute $FILE
     retval=$?
     ${_ASSERT_EQUALS_} 'auto-apply-execute' $TRUE ${retval}
     PRESENT=$FALSE
     [ -f $FILE ] && PRESENT=$TRUE
     ${_ASSERT_EQUALS_} 'auto-apply-removed' $PRESENT $FALSE
+}
+
+test_AutoApply_Execute_fails_due_to_immutable()
+{
+    [ $ID -ne 0 ] && startSkipping
+    FILE="/tmp/opti-tests-auto-apply"
+    touch ${FILE}
+    chmod 700 ${FILE}
+    # prevent moving after restore by setting immutable-bit
+    [ $ID -eq 0 ] && chattr +i $FILE
+    auto_apply_execute $FILE
+    retval=$?
+    ${_ASSERT_EQUALS_} 'auto-apply-execute' $TRUE ${retval}
+    PRESENT=$FALSE
+    [ -f $FILE ] && PRESENT=$TRUE
+    ${_ASSERT_EQUALS_} 'auto-apply-removed' $PRESENT $TRUE
+    # file still present, so reset immutable after test
+    [ $ID -eq 0 ] && chattr -i $FILE
+    rm -f $FILE
 }
 
 test_Modprobe_NetFilter()
