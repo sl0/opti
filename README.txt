@@ -2,25 +2,29 @@
 iptables-optimizer
 ==================
 
-Optimize kernels ruleset by sorting in relation to usage.
+Optimize kernel's iptables ruleset by usage.
 
 Author:     Johannes Hubertz <johannes@hubertz.de>
 
-Date:       2014-09-04
+Date:       2014-09-15
 
 Version:    0.9.11
 
 License:    GNU General Public License version 3 or later
 
 Benefit:    Less interrupt load in a statistical point of
-            view, though minimizing latencies for any
-            traversing packets.
+            view by minimizing latencies for any 
+            IPv4 or IPv6 pakets slowed down by very long 
+            ip(6)tables chains.
 
 Costs:      Small amount of additional user space workload.
 
-The iptables-optimizer is intended to sort the chains in
+ip6tables-optimizer behaves like iptables-optimizer, except
+it uses ip6tables commands instead of iptables commands.
+
+The ip(6)tables-optimizer is intended to sort the chains in
 the running Linux-kernel, goal is to reduce latency of
-throughput. It runs as a shell script, which calls a
+traversing pakets. It runs as a shell script, which calls a
 python script. This sorts the chains by decreasing values
 of packet counters, afterwards the result is restored into
 the kernel.
@@ -34,106 +38,22 @@ administrator to create his rules using as few policy-
 changes as possible within his ruleset to have a maximum
 benefit of the optimizer-script.
 
-Changes to 0.9.11:
-Introduced ip6tables-optimizer by creating a symlink and
-minor changes within the wrapper. The manpage for the new
-ip6tables-optimizer is created by replacing iptables- with
-ip6tables with sed.
-
-Changes to 0.9.10:
-The shell wrapper was completely rewritten. Using shunit2
-tests have been written to make the wrapper as reliable
-as the python part of the iptables-optimizer. Some command
-line arguments are evaluated:
+Using shunit2 tests insure the wrapper part is as reliable
+as the python part of the ip(6)tables-optimizer. 
+ip(6)tables-optimizer evaluates some line arguments:
 -a do not look for /var/cache/iptables-optimizer/auto-apply
 -c do not reset paket/byte counters on restoring tables
--v add logging, twice shows partition tables
+-h to give this list of valid options
+-v add logging, twice shows partition tables in logs
 -w shows partition tables for INPUT and OUTPUT only
 
-A small modification on the iptables_optimizer.py: As an
-command line argument it accepts a filename for reading now.
+Starting up the existance of an executable file is checked.
 
-Changes to 0.9.9:
-Debian package now ships a single python file, no more
-any python3 dependencies as python2 is standard in Debian
-deb-helpers for building python-modules removed, default
-python from distribution is used in shebang directly
+/var/cache/iptables-optimizer/{auto-apply,auto-apply6}
 
-Changes to 0.9.8:
-iptables_optimizer.py is now python3.2 ready and
-tested by tox with nosetests3
-
-Changes to 0.9.7:
-Keeping pylint happy is an unreached goal. setuptools for
-setup, version step.
-
-Changes to 0.9.6:
-no need of postinst, auto-apply is fetched from
-/var/cache/iptables-optimizer now
-
-Changes to 0.9.5:
-Version numbers corrected in setup.py, README.txt, and in
-the scripts. postinst now contains #DEBHELPER# tag for
-silence with gpb buildpackage --git-pbuilder
-
-Changes to 0.9.4:
-/root/auto-apply moved to /var/cache/auto-apply/auto-apply
-postinst creates /var/cache/auto-apply/
-i-o.py moved to /usr/share/pyshared/iptables_optimizer.py
-man-page adapted and more verbose now.
-
-Changes to 0.9.3:
-/root/auto-apply moved to new location:
-/var/cache/auto-apply/auto-apply
-debian/postinst written
-
-Changes to 0.9.3:
-Package name changed to iptables-optimizer
-No longer calls of non-shipped elements
-
-Changes to 0.9.2:
-Debianization on the run, multiple corrections of path
-wrapper now comes as /usr/sbin/iptables-optimizer, the
-python as /usr/sbin/iptables_optimizer.py
-workfiles now all moved to /var/run, auto-apply still
-kept in /root and mentioned in the only kept man-page
-iptables-optimizer.8
-
-Changes to 0.9.1:
-Now the wrapper is included, see optimize.sh. It can do
-auto-apply now. Manuals have been written for both
-optimize.sh and iptables-optimizer, which is an executable
-copy of iptables_optimizer.py in /sbin. Nosetests are
-replaced by tox, so we're sure about the python part is
-working with python2.6, python2.7 and python3.2 as well
-as compliance to pep8.
-
-Changes to 0.9:
-syslog removed, no external commands
-Root access is no longer needed for the python-script,
-because no external commands are needed any longer.
-Instead, use a wrapper outside to read iptables from
-kernel into a file and put them back into kernel from
-another file, which is created by the wrapper from
-stdout of the python-script. So we have a better control
-of what happens than ever before. There is no longer
-support of auto-apply, because the wrapper can do this
-as well if you like it.
-
-There is one single reason for these changes: nosetests
-were introduced, about 95% of the code is tested now,
-but of course thats no guarantee for no programming
-errors. Be careful, look into the code! Look at the
-Makefile, tests are called from there. And I agree,
-they are right, those rumors about software is broken
-by design, if it is not verified by automated tests.
-Because this piece of software was broken, but very
-rare to be seen. For the tests, an example of input is
-included now, see file "reference-input", which is the
-default filename for reading.
-
-Changes before: Mostly irrelevant, please have a close
-look into the git: https://github.com/sl0/opti.git
+It is fed into the kernel by running ip(6)tables-restore
+and afterwards renamed following a simple date-time strategy.
+Thats my way of firing new rules into the kernel.
 
 Ideas, suggestions, comments welcome.
 
