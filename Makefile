@@ -18,12 +18,10 @@ deb:
 	gbp buildpackage --git-pbuilder
 
 doc:
-	(cd docs; make html)
-
-
+	make -C docs html
 
 clean:
-	(cd docs; make clean)
+	make -C docs clean
 	@python setup.py clean --bdist-base build
 	@rm -rf .coverage *.pyc reference-output rs ts build
 	@rm -rf __pycache__ iptables_optimizer.egg-info/ dist
