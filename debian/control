@@ -6,8 +6,8 @@ Build-Depends: python (>= 2.6.5-3), debhelper (>= 9), shunit2 (>=2.1.6), python-
 Standards-Version: 3.9.5
 
 Package: iptables-optimizer
-Architecture: any
-X-Python-Version: >= 2.7
+Architecture: all
+X-Python-Version: >= 2.6
 Depends: ${misc:Depends}, ${python:Depends}
 Description: sort iptables rules by packet counters
  iptables-optimizer is a shell and Python based tool for sorting
@@ -17,7 +17,7 @@ Description: sort iptables rules by packet counters
 
 Package: iptables-optimizer-doc
 Section: doc
-Architecture: any
+Architecture: all
 Depends: ${misc:Depends}
 Description: sphinx html documentation for iptables-optimizer
  iptables-optimizer is a shell and Python based tool for sorting
