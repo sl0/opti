@@ -27,10 +27,12 @@ Have Fun!
 """
 
 import sys
+
+
 try:
-    from collections import OrderedDict as OD
+    from collections import OrderedDict as OptimizerDict
 except:
-    pass    # python2.6
+    OptimizerDict = dict    # python2.6
 
 
 def extract_pkt_cntr(cntrs):
@@ -156,10 +158,7 @@ class Filter():
 
     def __init__(self, groupname="filter", filename="reference-input"):
         """create a Filter object representing a filtergroup of iptables"""
-        try:
-            self.chains = OD()  # keep track of my chains
-        except:
-            self.chains = {}    # python2.6
+        self.chains = OptimizerDict()  # keep track of my chains
         self.groupname = groupname
         self.filename = filename
         try:
