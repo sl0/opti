@@ -8,7 +8,7 @@ Standards-Version: 3.9.5
 Package: iptables-optimizer
 Architecture: all
 X-Python-Version: >= 2.6
-Depends: ${misc:Depends}, ${python:Depends}
+Depends: ${misc:Depends}, python (>= 2.6.5-3)
 Description: sort iptables rules by packet counters
  iptables-optimizer is a shell and Python based tool for sorting
  iptables rules by packet/byte counters according to the
