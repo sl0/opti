@@ -6,8 +6,8 @@
 
 case "$1" in
     purge)
-	rm -rf /var/cache/iptables-optimizer ;
-	rm -f  /var/run/iptables-optimizer-* ;
+	rm -rf /var/cache/iptables-optimizer
+	rm -f  /var/run/iptables-optimizer-*
     ;;
 
     remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
