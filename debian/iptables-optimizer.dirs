@@ -1,3 +1,4 @@
 /usr/sbin
 /usr/share/iptables-optimizer
+/usr/share/pyshared
 /var/cache/iptables-optimizer
