@@ -8,6 +8,9 @@ export DEB_BUILD_OPTIONS=1
 PYTHON2=$(shell pyversions -vr)
 #PYTHON3=$(shell py3versions -vr)
 
+# Sollte das nötig sein? Pbuilder und die Build-daemons machen
+# das ja automatisch.
+
 # Prevent setuptools/distribute from accessing the internet.
 export http_proxy = http://127.0.9.1:9
 
@@ -15,12 +18,14 @@ export http_proxy = http://127.0.9.1:9
 %:
 	dh $@ --with python2,sphinxdoc
 
-build-python%:
-	python$* setup.py build
 
-install-python%:
-	python$* setup.py install --root=$(CURDIR)/debian/tmp --install-layout=deb
-
+# Brauchst Du die ? Macht das dh_python2 nicht richtig?
+#build-python%:
+#	python$* setup.py build
+#
+#install-python%:
+#	python$* setup.py install --root=$(CURDIR)/debian/tmp --install-layout=deb
+#
 
 build: build-stamp
 
@@ -32,15 +37,21 @@ clean:
 
 #install:	build
 
-override_dh_install:
+#dh_install ist nur ein tool, da nicht mehrere Sachen reinpacken, wenn dann dh_auto_install überschreiben und
+#unten noch mal aufrufen:
+
+override_dh_auto_install:
 	dh_prep
-	dh_installdirs /usr/sbin /usr/share/iptables-optimizer /usr/share/pyshared /var/cache/iptables-optimizer
+	dh_installdirs
 	dh_installman --language=C man/*
-	cd $(CURDIR)/debian/iptables-optimizer/usr/share/man/man8 && \
-		cat ${CURDIR}/man/iptables-optimizer.8 | \
-        sed -e 's/iptables/ip6tables/g' |  sed -e 's/auto-apply/auto-apply6/g' | \
-        gzip > ip6tables-optimizer.8.gz
+	#dh_python2
+
+	# Besser override_dh_installdocs
+
 	dh_installdocs --exclude=html
+
+
+	# Macht alles dh_python2
 	cd $(CURDIR)/debian/iptables-optimizer/usr/share/pyshared && \
 		cp $(CURDIR)/iptables_optimizer.py iptables_optimizer.py 
 	cd $(CURDIR)/debian/iptables-optimizer/usr/share/iptables-optimizer && \
@@ -51,7 +62,13 @@ override_dh_install:
 		chmod 755 iptables-optimizer
 	cd $(CURDIR)/debian/iptables-optimizer/usr/sbin && ln -s iptables-optimizer ip6tables-optimizer
 	cd $(CURDIR)
+
+	# Macht debhelper für Dich mit, wenn Du
+
+	rm -rf .tox
 	dh_lintian
+
+	dh_auto_install
 
 override_dh_installdocs:
 	python setup.py build_sphinx
