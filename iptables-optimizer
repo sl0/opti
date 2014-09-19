@@ -2,11 +2,11 @@
 #
 # License:  GNU General Public License version 3 or newer
 # Author:   Johannes Hubertz <johannes@hubertz.de>
-# Version:  0.9.11
-# Date:     2014-09-04
+VERSION="0.9.11"
+# Date:     2014-09-19
 #
 # Fullname: /usr/sbin/iptables-optimizer
-#           /usr/sbin/ip6tables-optimizer  (works a symlink)
+#           /usr/sbin/ip6tables-optimizer (works as a symlink)
 #
 # optional command line switches:
 #    -a    suppress checking and applying of new rulesets
@@ -16,7 +16,11 @@
 #    -c    if present, no resetting the paket/byte counters
 #          for easier long term debugging
 #
+#    -e    do not exit on first error, for debug only!
+#
 #    -h    hint for options
+#
+#    -o    skip optimization at all, results in auto-apply only
 #
 #    -i    verbose logging reduced to INPUT and OUTPUT chains
 #
@@ -79,6 +83,8 @@ COUNTER=0
 # 0 => do reset packet/byte counters on the restore, default
 # 1 => do not reset packet/byte counters on restore
 #
+# command line argument -o manipulates the variable
+OPTIMIZE=$TRUE
 # command line argument -v manipulates the variable,
 #         may be used more than once
 VERBLOG=0
@@ -105,11 +111,13 @@ trap error_func ERR
 #
 # evaluate command line arguments
 #
-while getopts ":achvw" opt; do
+while getopts ":acehovw" opt; do
   case $opt in
     a) AUTO=${AUTO__DIR}/unwanted ;;
     c) COUNTER=1;;
+    e) set +e ;;
     h) usage; exit 1;;
+    o) OPTIMIZE=$FALSE ;;
     v) VERBLOG=$(( ${VERBLOG} + 1 ));;
     w) INOUT=$TRUE; VERBLOG=2;;
     \?) echo "invalid option -- $OPTARG" >&2 ; usage; exit 1;;
@@ -124,6 +132,9 @@ log_start
 # look if new rules are present and do neccessary actions
 ERROR_TEXT="checking ${AUTO}"
 check_auto_apply_ready "${AUTO}" && auto_apply_execute "${AUTO}"
+#
+#
+[ "$OPTIMIZE" -eq "$FALSE" ] && exit 0
 #
 cd $WORKBENCH
 #

@@ -8,12 +8,15 @@
 # these functions are sourced in iptables-optimizer and it's tests
 
 usage() {
-    echo "run as root, the valid options are:"
-    echo "-a   do not evaluate auto-apply"
-    echo "-c   do not reset paket/byte counters"
-    echo "-h   these hints for a correct usage"
-    echo "-v   verbose log, even more if given twice"
-    echo "-w   log about INPUT/OUTPUT chains only, implies -vv"
+    echo "`basename $0` version $VERSION (needs to be run as root)"
+    echo -e "the valid options are:"
+    echo -e "\t-a   do not evaluate auto-apply"
+    echo -e "\t-c   do not reset paket/byte counters"
+    echo -e "\t-e   do not fail on first error, for debugging only!"
+    echo -e "\t-h   these hints for a correct usage"
+    echo -e "\t-o   do not optimize (not useful in combination with -a)"
+    echo -e "\t-v   verbose log, even more if given twice"
+    echo -e "\t-w   log about INPUT/OUTPUT chains only, implies -vv"
 }
 
 error_func() {
