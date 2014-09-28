@@ -2,13 +2,13 @@ Source: iptables-optimizer
 Section: net
 Priority: extra
 Maintainer: Johannes Hubertz <johannes@hubertz.de>
-Build-Depends: python (>= 2.6.5-3), debhelper (>= 9), shunit2 (>=2.1.6), python-sphinx (>= 1.2.2),  python-setuptools
+Build-Depends: python (>= 2.7.8), debhelper (>= 9), shunit2 (>=2.1.6), python-sphinx (>= 1.2.3),  python-setuptools (>= 5.5.1)
 Standards-Version: 3.9.5
 
 Package: iptables-optimizer
 Architecture: all
-X-Python-Version: >= 2.6
-Depends: ${misc:Depends}, python (>= 2.6.5-3)
+X-Python-Version: >= 2.7
+Depends: ${misc:Depends}, python (>= 2.7.8-7), bash (>= 4.3)
 Description: sort iptables rules by packet counters
  iptables-optimizer is a shell and Python based tool for sorting
  iptables rules by packet/byte counters according to the

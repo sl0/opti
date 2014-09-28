@@ -1,3 +1,11 @@
+iptables-optimizer (0.9.12) unstable; urgency=medium
+
+  * branch squeeze created to enable simple backport
+  * dependencies for build and runtime set to testing
+  * documentation configuration: no index and sources
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Thu, 28 Sep 2014 12:31:23 +0200
+
 iptables-optimizer (0.9.11) unstable; urgency=medium
 
   * shunit2 test skipping for non root users explained
