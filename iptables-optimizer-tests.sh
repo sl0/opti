@@ -1,6 +1,6 @@
 #!/bin/bash
 # Tests for all the shell functions needed by iptables-optimizer
-# 2014-09-11
+# 2014-09-28
 # Johannes Hubertz
 #
 export TRUE=0

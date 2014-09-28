@@ -8,16 +8,16 @@
     in relation to usage (packet counters)
 
 Author:     Johannes Hubertz johannes@hubertz.de
-Date:       2014-09-04
-Version:    0.9.11
+Date:       2014-09-28
+Version:    0.9.12
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
 in iptables packetfilter chains, optimization target is throughput.
 
 All chains are partitioned now, sorting is done inside the
-partitions. Sequence of partitions is never changed, these keep
-untouched for not destroying admistrators artwork.
+partitions. Sequence of partitions is never changed, these are
+kept untouched for not destroying admistrators artwork.
 
 You will need a wrapper script, f.e. iptables-optimizer
 

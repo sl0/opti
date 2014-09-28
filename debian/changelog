@@ -1,4 +1,13 @@
-iptables-optimizer (0.9.11) unstable; urgency=medium
+iptables-optimizer-squeeze (0.9.12) unstable; urgency=medium
+
+  * branch squeeze created to enable simple backport
+  * dependencies for build and runtime set to testing
+  * documentation configuration: no index and sources
+  * some more unneccessary options: -e -o
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Thu, 28 Sep 2014 21:01:03 +0200
+
+iptables-optimizer-squeeze (0.9.11) unstable; urgency=medium
 
   * shunit2 test skipping for non root users explained
   * addig IP6 variable seems easy going
