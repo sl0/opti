@@ -6,9 +6,9 @@ Optimize kernel's iptables ruleset by usage.
 
 Author:     Johannes Hubertz <johannes@hubertz.de>
 
-Date:       2014-09-15
+Date:       2014-09-28
 
-Version:    0.9.11
+Version:    0.9.12
 
 License:    GNU General Public License version 3 or later
 
