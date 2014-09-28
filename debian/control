@@ -5,7 +5,7 @@ Maintainer: Johannes Hubertz <johannes@hubertz.de>
 Build-Depends: python (>= 2.6.5-3), debhelper (>= 9), shunit2 (>=2.1.6), python-sphinx (>= 1.2.2),  python-setuptools
 Standards-Version: 3.9.5
 
-Package: iptables-optimizer
+Package: iptables-optimizer-squeeze-lts
 Architecture: all
 X-Python-Version: >= 2.6
 Depends: ${misc:Depends}, python (>= 2.6.5-3)
@@ -15,7 +15,7 @@ Description: sort iptables rules by packet counters
  administrators policy, ip6tables-optimizer works similar just
  for ip6tables chains.
 
-Package: iptables-optimizer-doc
+Package: iptables-optimizer-squeeze-lts-doc
 Section: doc
 Architecture: all
 Depends: ${misc:Depends}
