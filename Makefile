@@ -25,6 +25,6 @@ clean:
 	@python setup.py clean --bdist-base build
 	@rm -rf .coverage *.pyc reference-output rs ts build
 	@rm -rf __pycache__ iptables_optimizer.egg-info/ dist
-	@rm -rf *.py3 .tox .noseids
+	@rm -rf *.py3 .tox .noseids .pybuild
 	@dh_clean || /bin/true
 
