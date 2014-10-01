@@ -7,8 +7,8 @@ export DH_VERBOSE=1
 export DH_OPTIONS=-v
 export DEB_BUILD_OPTIONS=1
 
-PYTHON2_VERSIONS=$(shell pyversions -r)
-PYTHON3_VERSIONS=$(shell py3versions -r)
+#PYTHON2_VERSIONS=$(shell pyversions -r)
+#PYTHON3_VERSIONS=$(shell py3versions -r)
 
 # Prevent setuptools/distribute from accessing the internet.
 export http_proxy = http://127.0.9.1:9
@@ -18,6 +18,7 @@ export http_proxy = http://127.0.9.1:9
 	dh $@ --with python2,sphinxdoc --buildsystem=pybuild
 
 build: build-stamp
+	make alltests
 
 build-stamp:
 	dh_testdir
@@ -30,10 +31,16 @@ override_dh_auto_install:
 	dh_installdirs
 	dh_installdocs
 	dh_installman --language=C man/*
-	dh_install
+	mkdir $(CURDIR)/debian/tmp
+	cp $(CURDIR)/iptables_optimizer.py $(CURDIR)/debian/tmp/iptables_optimizer.py 
+	sed -e 's!python iptables_optimizer.py!python /usr/share/pyshared/iptables_optimizer.py!' \
+		< $(CURDIR)/iptables-optimizer-functions  > $(CURDIR)/debian/tmp/iptables-optimizer-functions
+	sed -e 's!^source iptables-optimizer-func!source /usr/share/iptables-optimizer/iptables-optimizer-func!' \
+		< $(CURDIR)/iptables-optimizer  > $(CURDIR)/debian/tmp/iptables-optimizer && \
+		chmod 755 $(CURDIR)/debian/tmp/iptables-optimizer
+	dh_install --sourcedir debian/tmp
 	cd $(CURDIR)/debian/iptables-optimizer/usr/sbin && ln -s iptables-optimizer ip6tables-optimizer
 	cd $(CURDIR)
-	rm -rf .tox
 	dh_lintian
 
 override_dh_installdocs:
@@ -41,8 +48,6 @@ override_dh_installdocs:
 	dh_installdocs --package=iptables-optimizer-doc build/sphinx/html
 
 override_dh_auto_clean:
-	dh_auto_clean
 	rm -rf build
 	rm -rf *.egg-info
-
 
