@@ -13,7 +13,7 @@
 #          think twice because of concurrent iptables-commands
 #          usually are not a very good idea!
 #
-#    -c    if present, no resetting the paket/byte counters
+#    -c    if present, no resetting the packet/byte counters
 #          for easier long term debugging
 #
 #    -h    hint for options

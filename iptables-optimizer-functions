@@ -10,7 +10,7 @@
 usage() {
     echo "run as root, the valid options are:"
     echo "-a   do not evaluate auto-apply"
-    echo "-c   do not reset paket/byte counters"
+    echo "-c   do not reset packet/byte counters"
     echo "-h   these hints for a correct usage"
     echo "-v   verbose log, even more if given twice"
     echo "-w   log about INPUT/OUTPUT chains only, implies -vv"
