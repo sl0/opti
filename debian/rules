@@ -35,7 +35,7 @@ override_dh_auto_install:
 	cp $(CURDIR)/iptables_optimizer.py $(CURDIR)/debian/tmp/iptables_optimizer.py 
 	sed -e 's!python iptables_optimizer.py!python /usr/share/pyshared/iptables_optimizer.py!' \
 		< $(CURDIR)/iptables-optimizer-functions  > $(CURDIR)/debian/tmp/iptables-optimizer-functions
-	sed -e 's!^source iptables-optimizer-func!source /usr/share/iptables-optimizer/iptables-optimizer-func!' \
+	sed -e 's!^source iptables-optimizer-func!source /usr/share/iptables-optimizer-squeeze/iptables-optimizer-func!' \
 		< $(CURDIR)/iptables-optimizer  > $(CURDIR)/debian/tmp/iptables-optimizer && \
 		chmod 755 $(CURDIR)/debian/tmp/iptables-optimizer
 	dh_install --sourcedir debian/tmp
@@ -45,7 +45,7 @@ override_dh_auto_install:
 
 override_dh_installdocs:
 	python setup.py build_sphinx
-	dh_installdocs --package=iptables-optimizer--squeeze-doc build/sphinx/html
+	dh_installdocs --package=iptables-optimizer-squeeze-doc build/sphinx/html
 
 override_dh_auto_clean:
 	rm -rf build
