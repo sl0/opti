@@ -18,7 +18,7 @@ export http_proxy = http://127.0.9.1:9
 	dh $@ --with python2,sphinxdoc --buildsystem=pybuild
 
 build: build-stamp
-	make alltests
+	#make alltests
 
 build-stamp:
 	dh_testdir
@@ -39,13 +39,13 @@ override_dh_auto_install:
 		< $(CURDIR)/iptables-optimizer  > $(CURDIR)/debian/tmp/iptables-optimizer && \
 		chmod 755 $(CURDIR)/debian/tmp/iptables-optimizer
 	dh_install --sourcedir debian/tmp
-	cd $(CURDIR)/debian/iptables-optimizer/usr/sbin && ln -s iptables-optimizer ip6tables-optimizer
+	cd $(CURDIR)/debian/iptables-optimizer-squeeze/usr/sbin && ln -s iptables-optimizer ip6tables-optimizer
 	cd $(CURDIR)
 	dh_lintian
 
 override_dh_installdocs:
 	python setup.py build_sphinx
-	dh_installdocs --package=iptables-optimizer-doc build/sphinx/html
+	dh_installdocs --package=iptables-optimizer--squeeze-doc build/sphinx/html
 
 override_dh_auto_clean:
 	rm -rf build
