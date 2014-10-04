@@ -38,8 +38,7 @@ override_dh_install:
 		< $(CURDIR)/iptables-optimizer  > $(CURDIR)/debian/tmp/iptables-optimizer && \
 		chmod 755 $(CURDIR)/debian/tmp/iptables-optimizer
 	dh_install --sourcedir debian/tmp
-	cd $(CURDIR)/debian/iptables-optimizer/usr/sbin && ln -s iptables-optimizer ip6tables-optimizer
-	cd $(CURDIR)
+	dh_link usr/sbin/iptables-optimizer usr/sbin/ip6tables-optimizer
 	dh_lintian
 
 override_dh_installdocs:
