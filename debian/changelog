@@ -1,4 +1,4 @@
-iptables-optimizer-squeeze (0.9.12) unstable; urgency=medium
+iptables-optimizer (0.9.12~bpo60) unstable; urgency=medium
 
   * branch squeeze created to enable simple backport
   * dependencies for build and runtime set to testing
