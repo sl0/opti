@@ -1,3 +1,0 @@
-iptables-optimizer            /usr/sbin
-iptables-optimizer-functions  /usr/share/iptables-optimizer-squeeze
-iptables_optimizer.py         /usr/share/pyshared
