@@ -15,7 +15,7 @@ Description: sort iptables rules by packet counters
  administrators policy, ip6tables-optimizer works similar just
  for ip6tables chains.
 
-Package: iptables-optimizer
+Package: iptables-optimizer-doc
 Section: doc
 Architecture: all
 Depends: ${misc:Depends}
