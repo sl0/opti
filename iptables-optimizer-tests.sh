@@ -41,6 +41,12 @@ test_Needs_to_run_as_root()
     ${_ASSERT_EQUALS_} 'expecting-to-run-as-root' 0 ${ID}
 }
 
+test_run_as_real_root()
+{
+    FAKED=$( printenv | grep -c FAKE )
+    ${_ASSERT_EQUALS_} 'expecting-to-run-as-real-root' 0 ${FAKED}
+}
+
 test_AutoApply_Not_Present()
 {
     [ $ID -ne 0 ] && startSkipping
