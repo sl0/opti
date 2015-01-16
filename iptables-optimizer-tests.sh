@@ -1,6 +1,6 @@
 #!/bin/bash
 # Tests for all the shell functions needed by iptables-optimizer
-# 2014-09-28
+# 2015-01-16
 # Johannes Hubertz
 #
 export TRUE=0
@@ -30,6 +30,8 @@ LOG=casual_logger
 
 # are we root?
 ID=$(id -u)
+FAKED=$( printenv | grep -c FAKE )
+REAL_ID=$(( $ID | $FAKED ))
 
 
 # first load the optimizer-functions
@@ -37,19 +39,12 @@ ID=$(id -u)
 
 test_Needs_to_run_as_root()
 {
-    ID=$(id -u)
-    ${_ASSERT_EQUALS_} 'expecting-to-run-as-root' 0 ${ID}
-}
-
-test_run_as_real_root()
-{
-    FAKED=$( printenv | grep -c FAKE )
-    ${_ASSERT_EQUALS_} 'expecting-to-run-as-real-root' 0 ${FAKED}
+    ${_ASSERT_EQUALS_} 'expecting-real-root' 0 ${REAL_ID}
 }
 
 test_AutoApply_Not_Present()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     # first check a non existing file for returning FALSE
     FILE="/tmp/opti-tests-auto-apply-not-present"
     check_auto_apply_ready $FILE
@@ -59,7 +54,7 @@ test_AutoApply_Not_Present()
 
 test_AutoApply_Not_Ready()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     # create an existing file (0600) for returning FALSE
     FILE="/tmp/opti-tests-auto-apply-not-executable"
     touch ${FILE}
@@ -71,7 +66,7 @@ test_AutoApply_Not_Ready()
 
 test_AutoApply_Ready()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     # create an existing file (0700) for returning TRUE
     FILE="/tmp/opti-tests-auto-apply"
     touch ${FILE}
@@ -83,7 +78,7 @@ test_AutoApply_Ready()
 
 test_AutoApply_Execute()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     FILE="/tmp/opti-tests-auto-apply"
     touch ${FILE}
     chmod 700 ${FILE}
@@ -97,12 +92,12 @@ test_AutoApply_Execute()
 
 test_AutoApply_Execute_fails_due_to_immutable()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     FILE="/tmp/opti-tests-auto-apply"
     touch ${FILE}
     chmod 700 ${FILE}
     # prevent moving after restore by setting immutable-bit
-    [ $ID -eq 0 ] && chattr +i $FILE
+    [ $REAL_ID -eq 0 ] && chattr +i $FILE
     auto_apply_execute $FILE
     retval=$?
     ${_ASSERT_EQUALS_} 'auto-apply-execute' $TRUE ${retval}
@@ -110,13 +105,13 @@ test_AutoApply_Execute_fails_due_to_immutable()
     [ -f $FILE ] && PRESENT=$TRUE
     ${_ASSERT_EQUALS_} 'auto-apply-removed' $PRESENT $TRUE
     # file still present, so reset immutable after test
-    [ $ID -eq 0 ] && chattr -i $FILE
+    [ $REAL_ID -eq 0 ] && chattr -i $FILE
     rm -f $FILE
 }
 
 test_Modprobe_NetFilter()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     # try to load iptable modules
     /sbin/modprobe iptable_filter
     retval=$?
@@ -125,7 +120,7 @@ test_Modprobe_NetFilter()
 
 test_Good_iptables_save_without_log()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     # try to save iptables from the kernel
     TABLES="/tmp/opti-tests-iptables-save-output"
     ERRORS="/tmp/opti-tests-iptables-save-errors"
@@ -137,7 +132,7 @@ test_Good_iptables_save_without_log()
 
 test_Good_iptables_save_simple_log()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     # try to save iptables from the kernel
     TABLES="/tmp/opti-tests-iptables-save-output"
     ERRORS="/tmp/opti-tests-iptables-save-errors"
@@ -149,7 +144,7 @@ test_Good_iptables_save_simple_log()
 
 test_Run_python_part_without_log()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     TABLES="/tmp/opti-tests-iptables-save-output"
     OPTOUT="/tmp/opti-tests-iptables-optimizer-output"
     STATIS="/tmp/opti-tests-iptables-optimizer-partitions"
@@ -161,7 +156,7 @@ test_Run_python_part_without_log()
 
 test_Run_python_part_simple_log()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     TABLES="/tmp/opti-tests-iptables-save-output"
     OPTOUT="/tmp/opti-tests-iptables-optimizer-output"
     STATIS="/tmp/opti-tests-iptables-optimizer-partitions"
@@ -173,7 +168,7 @@ test_Run_python_part_simple_log()
 
 test_Run_python_part_verb_log_all_chains()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     TABLES="/tmp/opti-tests-iptables-save-output"
     OPTOUT="/tmp/opti-tests-iptables-optimizer-output"
     STATIS="/tmp/opti-tests-iptables-optimizer-partitions"
@@ -187,7 +182,7 @@ test_Run_python_part_verb_log_all_chains()
 
 test_Run_python_part_verb_log_in_out_chains()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     TABLES="/tmp/opti-tests-iptables-save-output"
     OPTOUT="/tmp/opti-tests-iptables-optimizer-output"
     STATIS="/tmp/opti-tests-iptables-optimizer-partitions"
@@ -202,7 +197,7 @@ test_Run_python_part_verb_log_in_out_chains()
 
 test_Bad_iptables_save()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     # try to save iptables from the kernel
     TABLES="/tmp/opti-tests-iptables-save-output"
     touch $TABLES
@@ -219,7 +214,7 @@ test_Bad_iptables_save()
 
 test_Correct_iptables_restore()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     # try to restore iptables file into the kernel
     TABLES="/tmp/opti-tests-iptables-save-output"
     NORMAL="/tmp/opti-tests-iptables-restore-output"
@@ -232,7 +227,7 @@ test_Correct_iptables_restore()
 
 test_Faulty_iptables_restore()
 {
-    [ $ID -ne 0 ] && startSkipping
+    [ $REAL_ID -ne 0 ] && startSkipping
     # try to restore faulty iptables file into the kernel
     # create a faulty iptables statement and append
     TABLES="/tmp/opti-tests-iptables-save-output"
@@ -245,29 +240,27 @@ test_Faulty_iptables_restore()
     ${_ASSERT_EQUALS_} 'iptables-restore' $FALSE ${retval}
 }
 
-# finalize all these tests
+# some things before starting all these tests
 
 oneTimeSetUp()
 {
-    :
-    #log_start
-    [ $ID -eq 0 ] && ip${IP6}tables-save -c > /tmp/opti-tests-tables-before-status
-    [ $ID -eq 0 ] && ip${IP6}tables -F
-    [ $ID -eq 0 ] && ip${IP6}tables-restore -c reference-input${IP6}
+    [ $REAL_ID -eq 0 ] && ip${IP6}tables-save -c > /tmp/opti-tests-tables-before-status
+    [ $REAL_ID -eq 0 ] && ip${IP6}tables -F
+    [ $REAL_ID -eq 0 ] && ip${IP6}tables-restore -c reference-input${IP6}
 }
+
+# finalize some things after running all these tests
 
 oneTimeTearDown()
 {
-    :
-    [ $ID -eq 0 ] && ip${IP6}tables -F
-    [ $ID -eq 0 ] && ip${IP6}tables -X IPSEC
-    [ $ID -eq 0 ] && ip${IP6}tables-restore -c /tmp/opti-tests-tables-before-status
+    [ $REAL_ID -eq 0 ] && ip${IP6}tables -F
+    [ $REAL_ID -eq 0 ] && ip${IP6}tables -X IPSEC
+    [ $REAL_ID -eq 0 ] && ip${IP6}tables-restore -c /tmp/opti-tests-tables-before-status
     rm -f /tmp/opti*
 }
 
 # load shunit2 and execute the tests
 
 . shunit2
-
 
 exit 0
