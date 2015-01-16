@@ -2,8 +2,8 @@
 #
 # License:  GNU General Public License version 3 or newer
 # Author:   Johannes Hubertz <johannes@hubertz.de>
-# Version:  0.9.12
-# Date:     2014-09-28
+# Version:  0.9.13
+# Date:     2015-01-16
 #
 # Fullname: /usr/sbin/iptables-optimizer
 #           /usr/sbin/ip6tables-optimizer (works as a symlink)
@@ -13,7 +13,7 @@
 #          think twice because of concurrent iptables-commands
 #          usually are not a very good idea!
 #
-#    -c    if present, no resetting the paket/byte counters
+#    -c    if present, no resetting the packet/byte counters
 #          for easier long term debugging
 #
 #    -e    do not exit on first error, for debug only!

@@ -3,10 +3,11 @@ iptables-optimizer (0.9.12~bpo60) unstable; urgency=medium
   * branch squeeze created to enable simple backport
   * dependencies for build and runtime set to testing
   * documentation configuration: no index and sources
+  * debian files adapted, debhelpers more involved
   * some more unneccessary options: -e -o
   * debian/rules corrected to use override_dh_install wo. auto
 
- -- Johannes Hubertz <johannes@hubertz.de>  Thu, 02 Oct 2014 15:57:03 +0200
+ -- Johannes Hubertz <johannes@hubertz.de>  Sun, 28 Sep 2014 12:31:23 +0200
 
 iptables-optimizer-squeeze (0.9.11) unstable; urgency=medium
 
