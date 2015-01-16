@@ -4,19 +4,19 @@ Upstream-Contact: Johannes Hubertz <johannes@hubertz.de>
 Source: https://github.com/sl0/opti.git
 
 Files: *
-Copyright: 2012-2014 Johannes Hubertz <johannes@hubertz.de>
+Copyright: 2012-2015 Johannes Hubertz <johannes@hubertz.de>
 License: GPL-3+
 
 Files: debian/*
-Copyright: 2012-2014 Johannes Hubertz <johannes@hubertz.de>
+Copyright: 2012-2015 Johannes Hubertz <johannes@hubertz.de>
 License: GPL-3+
 
 Files: docs/*
-Copyright: 2012-2014 Johannes Hubertz <johannes@hubertz.de>
+Copyright: 2012-2015 Johannes Hubertz <johannes@hubertz.de>
 License: GPL-3+
 
 Files: man/*
-Copyright: 2012-2014 Johannes Hubertz <johannes@hubertz.de>
+Copyright: 2012-2015 Johannes Hubertz <johannes@hubertz.de>
 License: GPL-3+
 
 License: GPL-3+

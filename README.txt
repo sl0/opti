@@ -6,7 +6,7 @@ Optimize kernel's iptables ruleset by usage.
 
 Author:     Johannes Hubertz <johannes@hubertz.de>
 
-Date:       2014-09-28
+Date:       2015-01-16
 
 Version:    0.9.12
 
