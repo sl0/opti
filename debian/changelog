@@ -1,3 +1,10 @@
+iptables-optimizer (0.9.13~bpo60) unstable; urgency=medium
+
+  * tests improved to check for fakeroot
+  * version set to 0.9.13
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Fri, 16 Jan 2015 16:50:52 +0100
+
 iptables-optimizer (0.9.12~bpo60) unstable; urgency=medium
 
   * branch squeeze created to enable simple backport
