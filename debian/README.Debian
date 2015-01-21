@@ -1,8 +1,0 @@
-iptables-optimizer
-------------------
-
- iptables-optimizer is packaged by using
- gbp buildpackage out of the git repository
- https://github.com/sl0/opti.git
-
- -- Johannes Hubertz <johannes@hubertz.de>

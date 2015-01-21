@@ -1,4 +1,0 @@
-iptables-optimizer            /usr/sbin
-iptables-optimizer-functions  /usr/share/iptables-optimizer
-iptables_optimizer.py         /usr/share/pyshared
-../copyright                  /usr/share/doc/iptables-optimizer
