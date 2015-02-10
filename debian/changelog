@@ -1,7 +1,13 @@
+iptables-optimizer (0.9.13~1) unstable; urgency=medium
+
+  * shunit2 test added to check real root vs. fakeroot
+  * ID checks for root summarized to REAL_ID, all tests affected
+  * debian version set to 0.9.13-1, copyright msgs edited to 2015
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Tue, 10 Feb 2015 09:57:38 +0100
+
 iptables-optimizer (0.9.13) unstable; urgency=medium
 
-  * [33f92f4] shunit2 test added to check real root vs. fakeroot
-  * [67d74fe] ID checks for root summarized to REAL_ID, all tests affected
   * [c7045a8] version now set to 0.9.13
 
  -- Johannes Hubertz <johannes@hubertz.de>  Fri, 16 Jan 2015 15:52:20 +0100
