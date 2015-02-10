@@ -1,4 +1,4 @@
-iptables-optimizer (0.9.13~1) unstable; urgency=medium
+iptables-optimizer (0.9.13-1) unstable; urgency=medium
 
   * shunit2 test added to check real root vs. fakeroot
   * ID checks for root summarized to REAL_ID, all tests affected
