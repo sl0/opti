@@ -42,7 +42,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'iptables-optimizer'
-copyright = u'2014, Johannes Hubertz'
+copyright = u'2014, 2015, Johannes Hubertz'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

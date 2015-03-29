@@ -8,7 +8,7 @@
     in relation to usage (packet counters)
 
 Author:     Johannes Hubertz johannes@hubertz.de
-Date:       2015-01-16
+Date:       2015-02-10
 Version:    0.9.13
 License:    GNU General Public License version 3 or later
 

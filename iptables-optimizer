@@ -3,7 +3,7 @@
 # License:  GNU General Public License version 3 or newer
 # Author:   Johannes Hubertz <johannes@hubertz.de>
 # Version:  0.9.13
-# Date:     2015-01-16
+# Date:     2015-02-10
 #
 # Fullname: /usr/sbin/iptables-optimizer
 #           /usr/sbin/ip6tables-optimizer  (works a symlink)
@@ -18,9 +18,9 @@
 #
 #    -h    hint for options
 #
-#    -i    verbose logging reduced to INPUT and OUTPUT chains
-#
 #    -v    turns on logging, twice is more verbose
+#
+#    -w    verbose logging reduced to INPUT and OUTPUT chains
 #
 ##############################################################
 # iptables-optimizer runs in discrete steps:
