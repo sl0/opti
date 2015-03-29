@@ -1,3 +1,15 @@
+iptables-optimizer (0.9.13-2) unstable; urgency=medium
+
+  * [d1d8d0a] debian directory deleted in master branch
+    master is upstream now
+    packaging in debian/sid
+  * [3512fe0] version changed to 0.9.13, copyrighted to 2015-02-10
+  * [8f23ecd] debian/patches no longer needed
+  * [bfe4f85] gbp.conf added
+    to overwrite users global gbp.conf settings
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Sun, 29 Mar 2015 23:01:18 +0200
+
 iptables-optimizer (0.9.13-1) unstable; urgency=medium
 
   * shunit2 test added to check real root vs. fakeroot
