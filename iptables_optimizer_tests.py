@@ -2,7 +2,7 @@
 
 #encoding:utf8
 
-from iptables_optimizer import extract_pkt_cntr, Chain, Filter
+from iptables_optimizer import extract_pkt_cntr, Chain, Filter, FilterLoadError
 import unittest
 
 
@@ -220,7 +220,9 @@ class Filter_Test(unittest.TestCase):
 
     def test_01_filter_file_NOread(self):
         """Filter_Test: non existant input-file"""
-        self.assertRaises(Filter("filter", "not-exist-is-OK"))
+        filename = 'not-exist-is-OK'
+        with self.assertRaises(FilterLoadError):
+            f = Filter('filter', filename)
 
     def test_02_filter_file_OKread(self):
         """Filter_Test: read reference-input"""
