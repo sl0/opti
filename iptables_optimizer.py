@@ -8,8 +8,8 @@
     in relation to usage (packet counters)
 
 Author:     Johannes Hubertz johannes@hubertz.de
-Date:       2015-02-10
-Version:    0.9.13
+Date:       2016-12-06
+Version:    0.9.14
 License:    GNU General Public License version 3 or later
 
 This little helper is intended to optimize a large ruleset
@@ -42,6 +42,11 @@ def extract_pkt_cntr(cntrs):
     br2 = br1.replace("]", "").strip()
     pkts, byts = br2.split(':')
     return (pkts, byts)
+
+
+class FilterLoadError(Exception):
+    '''explicit error in case of wrong filename'''
+    pass
 
 
 class Chain():
@@ -176,7 +181,8 @@ class Filter():
                             c_name = items[act + 1]
                             self.chains[c_name].append(items)
         except IOError as err:
-            print(filename + ": ", err.strerror)
+            msg = filename + ': ' + err.strerror
+            raise FilterLoadError(msg)
 
     def opti(self):
         """optimize all chains, one pass, and ready

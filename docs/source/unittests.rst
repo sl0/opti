@@ -66,11 +66,11 @@ tox
 This is done with the operating systems standard python. For
 your convenience, a **tox.ini** is present as well for
 tests using different python versions, for now these are
-Python2.7 and Python3.4 which are used in debian jessie.
+Python2.7 and Python3.5 which are used in debian jessie.
 
 pep 8
 -----
 
-tox runs a pep 8 test as well, there are no complains.
+tox runs a pep 8 test and and a pyflakes test as well, there are no complains.
 
 Testing is great fun.

@@ -6,15 +6,15 @@ Optimize kernel's iptables ruleset by usage.
 
 Author:     Johannes Hubertz <johannes@hubertz.de>
 
-Date:       2015-02-10
+Date:       2016-12-06
 
-Version:    0.9.13
+Version:    0.9.14
 
 License:    GNU General Public License version 3 or later
 
 Benefit:    Less interrupt load in a statistical point of
-            view by minimizing latencies for any 
-            IPv4 or IPv6 packets slowed down by very long 
+            view by minimizing latencies for any
+            IPv4 or IPv6 packets slowed down by very long
             ip(6)tables chains.
 
 Costs:      Small amount of additional user space workload.
@@ -39,7 +39,7 @@ changes as possible within his ruleset to have a maximum
 benefit of the optimizer-script.
 
 Using shunit2 tests insure the wrapper part is as reliable
-as the python part of the ip(6)tables-optimizer. 
+as the python part of the ip(6)tables-optimizer.
 ip(6)tables-optimizer evaluates some line arguments:
 -a do not look for /var/cache/iptables-optimizer/auto-apply
 -c do not reset packet/byte counters on restoring tables

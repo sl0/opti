@@ -94,7 +94,7 @@ Python comes with batteries included, they say. The subprocess module
 can execute every shell command from within the python code. Sounds well,
 worked well until --- sometimes you have some different python versions
 running because of different operating systems, f.e. in Debian systems
-you may find python 2.5, 2.6, 2.7 and 3.2, 3.3 and 3.4, just like they
+you may find python 2.5, 2.6, 2.7 and 3.2, 3.3, 3.4 and 3.5, just like they
 are distributed as standard versions in etch, Lenny, squeeze and wheezy.
 Surprisingly the subprocess behavior changed a lot in these. I was very
 frustrated about that and therefore decided not to use it. Benefit was

@@ -21,10 +21,11 @@ doc:
 	make -C docs html
 
 clean:
-	make -C docs clean
-	@python setup.py clean --bdist-base build
+	@$(MAKE) -C docs clean
+	@python setup.py clean
 	@rm -rf .coverage *.pyc reference-output rs ts build
 	@rm -rf __pycache__ iptables_optimizer.egg-info/ dist
+	@rm -rf .cache ./build ./iptables_optimizer.py3
 	@rm -rf *.py3 .tox .noseids .pybuild
 	@dh_clean || /bin/true
 
