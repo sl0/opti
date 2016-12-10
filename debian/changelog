@@ -1,3 +1,15 @@
+iptables-optimizer (0.9.14-1) unstable; urgency=medium
+
+  * greencloud removed due to debian/stretch needs
+    (Closes: #845049)
+  * corrects error handling
+  * test imports and uses FilterLoadError in contextmanager
+  * tox adapted to python3.5, 2.6 removed
+  * version and date now set to 0.9.14 from 2016-12-06
+  * documentation mentions python 3.5 and pyflakes
+
+ -- Johannes Hubertz <johannes@hubertz.de>  Sat, 10 Dec 2016 22:01:18 +0200
+
 iptables-optimizer (0.9.13-2) unstable; urgency=medium
 
   * [d1d8d0a] debian directory deleted in master branch
